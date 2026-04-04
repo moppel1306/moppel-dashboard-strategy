@@ -698,14 +698,16 @@ class Simon42ViewRoomStrategy {
       });
     });
 
-    // Switches
+// Switches - nur Dauerlicht (Label: dauerlicht)
     roomEntities.switches.forEach(entity => {
+      const labels = hass.entities?.[entity]?.labels || [];
+      if (!labels.includes('dauerlicht')) return;
       miscCards.push({
         type: "tile",
         entity: entity,
         name: stripAreaName(entity, area, hass),
         vertical: false,
-        state_content: "last_changed"
+        state_color: true
       });
     });
 
