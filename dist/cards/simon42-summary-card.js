@@ -187,6 +187,21 @@ class Simon42SummaryCard extends HTMLElement {
           
           return true;
         });
+
+      case 'motion':
+        return allEntityIds.filter(id => {
+          if (!id.startsWith('binary_sensor.')) return false;
+          const state = hass.states[id];
+          if (!state) return false;
+          if (state.attributes?.device_class !== 'motion') return false;
+          if (this._excludeLabelsSet.has(id)) return false;
+          if (hiddenFromConfig.has(id)) return false;
+          const registryEntry = hass.entities?.[id];
+          if (registryEntry?.hidden === true) return false;
+          if (state.attributes?.entity_category === 'config') return false;
+          if (state.attributes?.entity_category === 'diagnostic') return false;
+          return true;
+        });
       
       default:
         return [];
@@ -235,6 +250,9 @@ class Simon42SummaryCard extends HTMLElement {
         // Batterien können theoretisch in jeder Gruppe sein
         return ['lights', 'covers', 'covers_curtain', 'climate', 
                 'media_player', 'vacuum', 'fan', 'switches'];
+
+      case 'motion':
+        return ['binary_sensor'];
       
       default:
         return [];
@@ -286,6 +304,11 @@ class Simon42SummaryCard extends HTMLElement {
           const value = parseFloat(state.state);
           return !isNaN(value) && value < 20;
         }).length;
+
+      case 'motion':
+        return relevantEntities.filter(id =>
+          this.hass.states[id]?.state === 'on'
+        ).length;
       
       default:
         return 0;
@@ -320,6 +343,12 @@ class Simon42SummaryCard extends HTMLElement {
         name: hasItems ? `${count} ${count === 1 ? 'Batterie' : 'Batterien'} kritisch` : 'Alle Batterien OK',
         color: hasItems ? 'red' : 'grey',
         path: 'batteries'
+      },
+      motion: {
+        icon: 'mdi:motion-sensor',
+        name: hasItems ? `${count} ${count === 1 ? 'Bewegung erkannt' : 'Bewegungen erkannt'}` : 'Keine Bewegung',
+        color: hasItems ? 'blue' : 'grey',
+        path: 'motion'
       }
     };
     
