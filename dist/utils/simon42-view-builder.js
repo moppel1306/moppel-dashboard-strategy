@@ -71,6 +71,17 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
         entities,
         config // Übergebe config für areas_options Filterung
       }
+    },
+    {
+      title: "Bewegungsmelder",
+      path: "motion",
+      icon: "mdi:motion-sensor",
+      subview: true,
+      strategy: {
+        type: "custom:simon42-view-motion",
+        entities,
+        config
+      }
     }
   ];
 }
