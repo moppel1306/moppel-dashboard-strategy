@@ -57,6 +57,7 @@ export function createOverviewSection(data) {
   // Prüfe ob summaries_columns konfiguriert ist (Standard: 2)
   const summariesColumns = config.summaries_columns || 2;
   const showCoversSummary = config.show_covers_summary !== false;
+  const showMotionSummary = config.show_motion_summary === true;
 
   // Füge Zusammenfassungen hinzu
   cards.push({
@@ -81,6 +82,14 @@ export function createOverviewSection(data) {
       areas_options: config.areas_options || {}
     });
   }
+
+  if (showMotionSummary) {
+  summaryCards.push({
+    type: "custom:simon42-summary-card",
+    summary_type: "motion",
+    areas_options: config.areas_options || {}
+  });
+}
 
   summaryCards.push(
     {
