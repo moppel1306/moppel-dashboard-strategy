@@ -539,17 +539,38 @@ class Simon42ViewRoomStrategy {
             heading_style: "title",
             icon: "mdi:thermostat"
           },
-          ...roomEntities.climate.map(entity => ({
-            type: "tile",
-            entity: entity,
-            name: stripAreaName(entity, area, hass),
-            features: [
-              { type: "climate-hvac-modes" }
-            ],
-            features_position: "inline",
-            vertical: false,
-            state_content: ["hvac_action", "current_temperature"]
-          }))
+          ...roomEntities.climate.map(entity => {
+            const hvacMode = hass.states[entity]?.attributes?.hvac_mode
+                          || hass.states[entity]?.state;
+            const iconMap = {
+              heat:      "mdi:radiator",
+              cool:      "mdi:snowflake",
+              off:       "mdi:radiator-off",
+              auto:      "mdi:thermostat-auto",
+              heat_cool: "mdi:thermostat",
+              fan_only:  "mdi:fan",
+              dry:       "mdi:water-percent"
+            };
+            // Kühlschränke erkennen (Name enthält "kühl" oder "fridge")
+            const name = (hass.states[entity]?.attributes?.friendly_name || entity).toLowerCase();
+            const isFridge = name.includes("kühl") || name.includes("fridge") || name.includes("kuehl");
+            const icon = isFridge
+              ? "mdi:fridge"
+              : (iconMap[hvacMode] || "mdi:thermostat");
+
+            return {
+              type: "tile",
+              entity: entity,
+              name: stripAreaName(entity, area, hass),
+              icon: icon,
+              features: [
+                { type: "target-temperature" }
+              ],
+              features_position: "bottom",
+              vertical: false,
+              state_content: ["hvac_action", "current_temperature", "target_temperature"]
+            };
+          })
         ]
       });
     }
