@@ -4,7 +4,7 @@
 class Simon42ViewMotionStrategy {
   static async generate(config, hass) {
     const allEntityIds = Object.keys(hass.states);
-    
+
     // Alle Bewegungsmelder filtern
     const motionEntities = allEntityIds.filter(id => {
       if (!id.startsWith('binary_sensor.')) return false;
@@ -18,32 +18,60 @@ class Simon42ViewMotionStrategy {
       return true;
     });
 
-    // Aktive zuerst, dann inaktive
-    const active = motionEntities.filter(id => hass.states[id]?.state === 'on');
+    const active   = motionEntities.filter(id => hass.states[id]?.state === 'on');
     const inactive = motionEntities.filter(id => hass.states[id]?.state !== 'on');
-    const sorted = [...active, ...inactive];
 
-    const cards = sorted.map(id => ({
+    const activeCards = active.map(id => ({
       type: 'tile',
       entity: id,
       state_color: true
     }));
 
+    const inactiveCards = inactive.map(id => ({
+      type: 'tile',
+      entity: id,
+      state_color: true
+    }));
+
+    const sections = [];
+
+    // Aktive Sensoren
+    sections.push({
+      type: "grid",
+      cards: [
+        {
+          type: "heading",
+          heading: `Bewegung erkannt (${active.length})`,
+          icon: "mdi:motion-sensor",
+          heading_style: "title"
+        },
+        ...(activeCards.length > 0 ? activeCards : [{
+          type: "markdown",
+          content: "Keine Bewegung wird gerade erkannt."
+        }])
+      ]
+    });
+
+    // Inaktive Sensoren
+    sections.push({
+      type: "grid",
+      cards: [
+        {
+          type: "heading",
+          heading: `Keine Bewegung (${inactive.length})`,
+          icon: "mdi:motion-sensor-off",
+          heading_style: "title"
+        },
+        ...(inactiveCards.length > 0 ? inactiveCards : [{
+          type: "markdown",
+          content: "Alle Sensoren aktiv."
+        }])
+      ]
+    });
+
     return {
       type: "sections",
-      sections: [
-        {
-          type: "grid",
-          cards: [
-            {
-              type: "heading",
-              heading: "Bewegungsmelder",
-              icon: "mdi:motion-sensor"
-            },
-            ...cards
-          ]
-        }
-      ]
+      sections
     };
   }
 }
