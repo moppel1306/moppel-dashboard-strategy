@@ -765,7 +765,7 @@ class Simon42ViewRoomStrategy {
             entity: entity,
             name: stripAreaName(entity, area, hass),
             vertical: false,
-            state_content: "last_changed"
+            state_color: true
           }))
         ]
       });
