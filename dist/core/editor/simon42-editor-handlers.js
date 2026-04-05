@@ -77,6 +77,15 @@ export function attachMotionSummaryCheckboxListener(element, callback) {
   }
 }
 
+export function attachBatteriesSummaryCheckboxListener(element, callback) {
+  const batteriesSummaryCheckbox = element.querySelector('#show-batteries-summary');
+  if (batteriesSummaryCheckbox) {
+    batteriesSummaryCheckbox.addEventListener('change', (e) => {
+      callback(e.target.checked);
+    });
+  }
+}
+
 export function attachAreaCheckboxListeners(element, callback) {
   const areaCheckboxes = element.querySelectorAll('.area-checkbox');
   areaCheckboxes.forEach(checkbox => {
