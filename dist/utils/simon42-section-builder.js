@@ -91,18 +91,21 @@ export function createOverviewSection(data) {
   });
 }
 
+  const showBatteriesSummary = config.show_batteries_summary !== false;
   summaryCards.push(
     {
       type: "custom:simon42-summary-card",
       summary_type: "security",
       areas_options: config.areas_options || {}
-    },
-    {
+    }
+  );
+  if (showBatteriesSummary) {
+    summaryCards.push({
       type: "custom:simon42-summary-card",
       summary_type: "batteries",
       areas_options: config.areas_options || {}
-    }
-  );
+    });
+  }
 
   // Layout-Logik: Dynamisch an Anzahl der Cards anpassen
   if (summariesColumns === 4) {
