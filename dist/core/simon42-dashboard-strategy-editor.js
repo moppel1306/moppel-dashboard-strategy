@@ -13,6 +13,7 @@ import {
   attachCoversSummaryCheckboxListener,
   attachMotionSummaryCheckboxListener,
   attachBatteriesSummaryCheckboxListener,
+  attachCO2SummaryCheckboxListener,
   attachLightsSummaryCheckboxListener,
   attachSecuritySummaryCheckboxListener,
   attachAreaCheckboxListeners,
@@ -75,6 +76,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     const showCoversSummary = this._config.show_covers_summary !== false;
     const showMotionSummary = this._config.show_motion_summary === true;
     const showBatteriesSummary = this._config.show_batteries_summary !== false;
+    const showCO2Summary = this._config.show_co2_summary === true;
     const showLightsSummary = this._config.show_lights_summary !== false;
     const showSecuritySummary = this._config.show_security_summary !== false;
     const summariesColumns = this._config.summaries_columns || 2;
@@ -128,6 +130,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
         showCoversSummary,
         showMotionSummary,
         showBatteriesSummary,
+        showCO2Summary,
         showLightsSummary,
         showSecuritySummary
       })}
@@ -143,6 +146,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     attachCoversSummaryCheckboxListener(this, (showCoversSummary) => this._showCoversSummaryChanged(showCoversSummary));
     attachMotionSummaryCheckboxListener(this, (showMotionSummary) => this._showMotionSummaryChanged(showMotionSummary));
     attachBatteriesSummaryCheckboxListener(this, (showBatteriesSummary) => this._showBatteriesSummaryChanged(showBatteriesSummary));
+    attachCO2SummaryCheckboxListener(this, (showCO2Summary) => this._showCO2SummaryChanged(showCO2Summary));
     attachLightsSummaryCheckboxListener(this, (showLightsSummary) => this._showLightsSummaryChanged(showLightsSummary));
     attachSecuritySummaryCheckboxListener(this, (showSecuritySummary) => this._showSecuritySummaryChanged(showSecuritySummary));
     this._attachSummariesColumnsListener();
@@ -946,6 +950,16 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     const newConfig = { ...this._config, show_security_summary: showSecuritySummary };
     if (showSecuritySummary === true) {
       delete newConfig.show_security_summary;
+    }
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _showCO2SummaryChanged(showCO2Summary) {
+    if (!this._config || !this._hass) return;
+    const newConfig = { ...this._config, show_co2_summary: showCO2Summary };
+    if (showCO2Summary === false) {
+      delete newConfig.show_co2_summary;
     }
     this._config = newConfig;
     this._fireConfigChanged(newConfig);
