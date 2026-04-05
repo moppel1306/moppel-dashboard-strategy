@@ -66,13 +66,16 @@ export function createOverviewSection(data) {
   });
 
   // Erstelle die Summary-Cards basierend auf Konfiguration
-  const summaryCards = [
-    {
+  const showLightsSummary = config.show_lights_summary !== false;
+  const showSecuritySummary = config.show_security_summary !== false;
+  const summaryCards = [];
+  if (showLightsSummary) {
+    summaryCards.push({
       type: "custom:simon42-summary-card",
       summary_type: "lights",
       areas_options: config.areas_options || {}
-    }
-  ];
+    });
+  }
 
   // Covers optional hinzufügen
   if (showCoversSummary) {
@@ -92,13 +95,13 @@ export function createOverviewSection(data) {
 }
 
   const showBatteriesSummary = config.show_batteries_summary !== false;
-  summaryCards.push(
-    {
+  if (showSecuritySummary) {
+    summaryCards.push({
       type: "custom:simon42-summary-card",
       summary_type: "security",
       areas_options: config.areas_options || {}
-    }
-  );
+    });
+  }
   if (showBatteriesSummary) {
     summaryCards.push({
       type: "custom:simon42-summary-card",
