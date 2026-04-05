@@ -202,6 +202,21 @@ class Simon42SummaryCard extends HTMLElement {
           if (state.attributes?.entity_category === 'diagnostic') return false;
           return true;
         });
+
+      case 'co2':
+        return allEntityIds.filter(id => {
+          if (!id.startsWith('sensor.')) return false;
+          const state = hass.states[id];
+          if (!state) return false;
+          if (state.attributes?.device_class !== 'carbon_dioxide') return false;
+          if (this._excludeLabelsSet.has(id)) return false;
+          if (hiddenFromConfig.has(id)) return false;
+          const registryEntry = hass.entities?.[id];
+          if (registryEntry?.hidden === true) return false;
+          if (state.attributes?.entity_category === 'config') return false;
+          if (state.attributes?.entity_category === 'diagnostic') return false;
+          return true;
+        });
       
       default:
         return [];
@@ -253,6 +268,9 @@ class Simon42SummaryCard extends HTMLElement {
 
       case 'motion':
         return ['binary_sensor'];
+
+      case 'co2':
+        return ['sensor'];
       
       default:
         return [];
@@ -309,6 +327,12 @@ class Simon42SummaryCard extends HTMLElement {
         return relevantEntities.filter(id =>
           this.hass.states[id]?.state === 'on'
         ).length;
+
+      case 'co2':
+        return relevantEntities.filter(id => {
+          const value = parseFloat(this.hass.states[id]?.state);
+          return !isNaN(value) && value >= 1400;
+        }).length;
       
       default:
         return 0;
@@ -349,6 +373,12 @@ class Simon42SummaryCard extends HTMLElement {
         name: hasItems ? `${count} ${count === 1 ? 'Bewegung erkannt' : 'Bewegungen erkannt'}` : 'Keine Bewegung',
         color: hasItems ? 'blue' : 'grey',
         path: 'motion'
+      },
+      co2: {
+        icon: hasItems ? 'mdi:molecule-co2' : 'mdi:air-filter',
+        name: hasItems ? `${count} ${count === 1 ? 'Raum kritisch' : 'Räume kritisch'} (CO₂)` : 'CO₂ überall OK',
+        color: hasItems ? 'red' : 'grey',
+        path: 'co2'
       }
     };
     
