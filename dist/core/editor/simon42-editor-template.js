@@ -127,6 +127,17 @@ export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy,
         <div class="description">
           Zeigt die Rollo-Zusammenfassungskarte in der Übersicht an.
         </div>
+        <div class="form-row">
+          <input 
+            type="checkbox" 
+            id="show-motion-summary" 
+            ${showMotionSummary === true ? 'checked' : ''}
+          />
+          <label for="show-motion-summary">Bewegungsmelder-Zusammenfassung anzeigen</label>
+        </div>
+        <div class="description">
+          Zeigt die Bewegungsmelder-Zusammenfassungskarte in der Übersicht an.
+        </div>
       </div>
 
       <div class="section">
