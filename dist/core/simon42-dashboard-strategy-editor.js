@@ -18,6 +18,8 @@ import {
   attachSecuritySummaryCheckboxListener,
   attachAreaCheckboxListeners,
   attachDragAndDropListeners,
+  attachFavoritesDragAndDropListeners,
+  attachRoomPinsDragAndDropListeners,
   attachExpandButtonListeners,
   sortAreaItems
 } from './editor/simon42-editor-handlers.js';
