@@ -68,6 +68,15 @@ export function attachCoversSummaryCheckboxListener(element, callback) {
   }
 }
 
+export function attachMotionSummaryCheckboxListener(element, callback) {
+  const motionSummaryCheckbox = element.querySelector('#show-motion-summary');
+  if (motionSummaryCheckbox) {
+    motionSummaryCheckbox.addEventListener('change', (e) => {
+      callback(e.target.checked);
+    });
+  }
+}
+
 export function attachAreaCheckboxListeners(element, callback) {
   const areaCheckboxes = element.querySelectorAll('.area-checkbox');
   areaCheckboxes.forEach(checkbox => {
