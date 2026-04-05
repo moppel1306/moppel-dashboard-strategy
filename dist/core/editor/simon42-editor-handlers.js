@@ -86,6 +86,24 @@ export function attachBatteriesSummaryCheckboxListener(element, callback) {
   }
 }
 
+export function attachLightsSummaryCheckboxListener(element, callback) {
+  const checkbox = element.querySelector('#show-lights-summary');
+  if (checkbox) {
+    checkbox.addEventListener('change', (e) => {
+      callback(e.target.checked);
+    });
+  }
+}
+
+export function attachSecuritySummaryCheckboxListener(element, callback) {
+  const checkbox = element.querySelector('#show-security-summary');
+  if (checkbox) {
+    checkbox.addEventListener('change', (e) => {
+      callback(e.target.checked);
+    });
+  }
+}
+
 export function attachAreaCheckboxListeners(element, callback) {
   const areaCheckboxes = element.querySelectorAll('.area-checkbox');
   areaCheckboxes.forEach(checkbox => {
