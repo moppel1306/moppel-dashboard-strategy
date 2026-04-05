@@ -13,6 +13,8 @@ import {
   attachCoversSummaryCheckboxListener,
   attachMotionSummaryCheckboxListener,
   attachBatteriesSummaryCheckboxListener,
+  attachLightsSummaryCheckboxListener,
+  attachSecuritySummaryCheckboxListener,
   attachAreaCheckboxListeners,
   attachDragAndDropListeners,
   attachExpandButtonListeners,
@@ -73,6 +75,8 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     const showCoversSummary = this._config.show_covers_summary !== false;
     const showMotionSummary = this._config.show_motion_summary === true;
     const showBatteriesSummary = this._config.show_batteries_summary !== false;
+    const showLightsSummary = this._config.show_lights_summary !== false;
+    const showSecuritySummary = this._config.show_security_summary !== false;
     const summariesColumns = this._config.summaries_columns || 2;
     const alarmEntity = this._config.alarm_entity || '';
     const favoriteEntities = this._config.favorite_entities || [];
@@ -123,7 +127,9 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
         groupByFloors, // NEU
         showCoversSummary,
         showMotionSummary,
-        showBatteriesSummary
+        showBatteriesSummary,
+        showLightsSummary,
+        showSecuritySummary
       })}
     `;
 
@@ -137,6 +143,8 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     attachCoversSummaryCheckboxListener(this, (showCoversSummary) => this._showCoversSummaryChanged(showCoversSummary));
     attachMotionSummaryCheckboxListener(this, (showMotionSummary) => this._showMotionSummaryChanged(showMotionSummary));
     attachBatteriesSummaryCheckboxListener(this, (showBatteriesSummary) => this._showBatteriesSummaryChanged(showBatteriesSummary));
+    attachLightsSummaryCheckboxListener(this, (showLightsSummary) => this._showLightsSummaryChanged(showLightsSummary));
+    attachSecuritySummaryCheckboxListener(this, (showSecuritySummary) => this._showSecuritySummaryChanged(showSecuritySummary));
     this._attachSummariesColumnsListener();
     this._attachAlarmEntityListener();
     this._attachFavoritesListeners();
@@ -918,6 +926,26 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     const newConfig = { ...this._config, show_batteries_summary: showBatteriesSummary };
     if (showBatteriesSummary === true) {
       delete newConfig.show_batteries_summary;
+    }
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _showLightsSummaryChanged(showLightsSummary) {
+    if (!this._config || !this._hass) return;
+    const newConfig = { ...this._config, show_lights_summary: showLightsSummary };
+    if (showLightsSummary === true) {
+      delete newConfig.show_lights_summary;
+    }
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _showSecuritySummaryChanged(showSecuritySummary) {
+    if (!this._config || !this._hass) return;
+    const newConfig = { ...this._config, show_security_summary: showSecuritySummary };
+    if (showSecuritySummary === true) {
+      delete newConfig.show_security_summary;
     }
     this._config = newConfig;
     this._fireConfigChanged(newConfig);
