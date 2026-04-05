@@ -40,5 +40,6 @@ import './views/simon42-view-covers.js';
 import './views/simon42-view-security.js';
 import './views/simon42-view-batteries.js';
 import './views/simon42-view-motion.js';
+import './views/simon42-view-co2.js';
 
 console.log('Simon42 Dashboard Strategies loaded successfully (with reactive lights + covers cards)!');
