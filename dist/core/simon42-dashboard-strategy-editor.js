@@ -69,6 +69,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     const showRoomViews = this._config.show_room_views === true; // Standard: false
     const groupByFloors = this._config.group_by_floors === true; // NEU
     const showCoversSummary = this._config.show_covers_summary !== false;
+    const showMotionSummary = this._config.show_motion_summary === true;
     const summariesColumns = this._config.summaries_columns || 2;
     const alarmEntity = this._config.alarm_entity || '';
     const favoriteEntities = this._config.favorite_entities || [];
@@ -117,7 +118,8 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
         roomPinEntities,
         allEntities,
         groupByFloors, // NEU
-        showCoversSummary
+        showCoversSummary,
+        showMotionSummary
       })}
     `;
 
@@ -129,6 +131,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     attachRoomViewsCheckboxListener(this, (showRoomViews) => this._showRoomViewsChanged(showRoomViews));
     attachGroupByFloorsCheckboxListener(this, (groupByFloors) => this._groupByFloorsChanged(groupByFloors)); // NEU
     attachCoversSummaryCheckboxListener(this, (showCoversSummary) => this._showCoversSummaryChanged(showCoversSummary));
+    attachMotionSummaryCheckboxListener(this, (showMotionSummary) => this._showMotionSummaryChanged(showMotionSummary));
     this._attachSummariesColumnsListener();
     this._attachAlarmEntityListener();
     this._attachFavoritesListeners();
@@ -891,6 +894,16 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
       delete newConfig.show_covers_summary;
     }
 
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _showMotionSummaryChanged(showMotionSummary) {
+    if (!this._config || !this._hass) return;
+    const newConfig = { ...this._config, show_motion_summary: showMotionSummary };
+    if (showMotionSummary === false) {
+      delete newConfig.show_motion_summary;
+    }
     this._config = newConfig;
     this._fireConfigChanged(newConfig);
   }
