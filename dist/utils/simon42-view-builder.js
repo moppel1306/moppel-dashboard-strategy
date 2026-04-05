@@ -82,6 +82,17 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
         entities,
         config
       }
+    },
+    {
+      title: "CO₂",
+      path: "co2",
+      icon: "mdi:molecule-co2",
+      subview: true,
+      strategy: {
+        type: "custom:simon42-view-co2",
+        entities,
+        config
+      }
     }
   ];
 }
