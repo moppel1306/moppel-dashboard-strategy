@@ -3,7 +3,7 @@
 // ====================================================================
 // HTML-Template für den Dashboard Strategy Editor
 
-export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary }) {
+export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary }) {
   return `
     <div class="card-config">
       <div class="section">
@@ -137,6 +137,17 @@ export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy,
         </div>
         <div class="description">
           Zeigt die Bewegungsmelder-Zusammenfassungskarte in der Übersicht an.
+        </div>
+        <div class="form-row">
+          <input 
+            type="checkbox" 
+            id="show-batteries-summary" 
+            ${showBatteriesSummary !== false ? 'checked' : ''}
+          />
+          <label for="show-batteries-summary">Batterie-Zusammenfassung anzeigen</label>
+        </div>
+        <div class="description">
+          Zeigt die Batterie-Zusammenfassungskarte in der Übersicht an.
         </div>
       </div>
 
