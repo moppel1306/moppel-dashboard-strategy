@@ -86,6 +86,15 @@ export function attachBatteriesSummaryCheckboxListener(element, callback) {
   }
 }
 
+export function attachCO2SummaryCheckboxListener(element, callback) {
+  const checkbox = element.querySelector('#show-co2-summary');
+  if (checkbox) {
+    checkbox.addEventListener('change', (e) => {
+      callback(e.target.checked);
+    });
+  }
+}
+
 export function attachLightsSummaryCheckboxListener(element, callback) {
   const checkbox = element.querySelector('#show-lights-summary');
   if (checkbox) {
