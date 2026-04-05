@@ -165,6 +165,14 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
       this,
       () => this._updateAreaOrder()
     );
+    attachFavoritesDragAndDropListeners(
+      this,
+      () => this._updateFavoritesOrder()
+    );
+    attachRoomPinsDragAndDropListeners(
+      this,
+      () => this._updateRoomPinsOrder()
+    );
     
     // Expand Button Listener
     attachExpandButtonListeners(
@@ -637,6 +645,38 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
       }
     };
 
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _updateFavoritesOrder() {
+    const list = this.querySelector('#favorites-list');
+    if (!list) return;
+    const items = Array.from(list.querySelectorAll('.favorite-item'));
+    const newOrder = items.map(item => item.dataset.entityId);
+    const newConfig = {
+      ...this._config,
+      favorite_entities: newOrder.length > 0 ? newOrder : undefined
+    };
+    if (!newConfig.favorite_entities) {
+      delete newConfig.favorite_entities;
+    }
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _updateRoomPinsOrder() {
+    const list = this.querySelector('#room-pins-list');
+    if (!list) return;
+    const items = Array.from(list.querySelectorAll('.room-pin-item'));
+    const newOrder = items.map(item => item.dataset.entityId);
+    const newConfig = {
+      ...this._config,
+      room_pin_entities: newOrder.length > 0 ? newOrder : undefined
+    };
+    if (!newConfig.room_pin_entities) {
+      delete newConfig.room_pin_entities;
+    }
     this._config = newConfig;
     this._fireConfigChanged(newConfig);
   }
