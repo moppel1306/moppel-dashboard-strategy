@@ -12,6 +12,7 @@ import {
   attachGroupByFloorsCheckboxListener, // NEU
   attachCoversSummaryCheckboxListener,
   attachMotionSummaryCheckboxListener,
+  attachBatteriesSummaryCheckboxListener,
   attachAreaCheckboxListeners,
   attachDragAndDropListeners,
   attachExpandButtonListeners,
@@ -71,6 +72,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     const groupByFloors = this._config.group_by_floors === true; // NEU
     const showCoversSummary = this._config.show_covers_summary !== false;
     const showMotionSummary = this._config.show_motion_summary === true;
+    const showBatteriesSummary = this._config.show_batteries_summary !== false;
     const summariesColumns = this._config.summaries_columns || 2;
     const alarmEntity = this._config.alarm_entity || '';
     const favoriteEntities = this._config.favorite_entities || [];
@@ -120,7 +122,8 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
         allEntities,
         groupByFloors, // NEU
         showCoversSummary,
-        showMotionSummary
+        showMotionSummary,
+        showBatteriesSummary
       })}
     `;
 
@@ -133,6 +136,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     attachGroupByFloorsCheckboxListener(this, (groupByFloors) => this._groupByFloorsChanged(groupByFloors)); // NEU
     attachCoversSummaryCheckboxListener(this, (showCoversSummary) => this._showCoversSummaryChanged(showCoversSummary));
     attachMotionSummaryCheckboxListener(this, (showMotionSummary) => this._showMotionSummaryChanged(showMotionSummary));
+    attachBatteriesSummaryCheckboxListener(this, (showBatteriesSummary) => this._showBatteriesSummaryChanged(showBatteriesSummary));
     this._attachSummariesColumnsListener();
     this._attachAlarmEntityListener();
     this._attachFavoritesListeners();
@@ -904,6 +908,16 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     const newConfig = { ...this._config, show_motion_summary: showMotionSummary };
     if (showMotionSummary === false) {
       delete newConfig.show_motion_summary;
+    }
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _showBatteriesSummaryChanged(showBatteriesSummary) {
+    if (!this._config || !this._hass) return;
+    const newConfig = { ...this._config, show_batteries_summary: showBatteriesSummary };
+    if (showBatteriesSummary === true) {
+      delete newConfig.show_batteries_summary;
     }
     this._config = newConfig;
     this._fireConfigChanged(newConfig);
