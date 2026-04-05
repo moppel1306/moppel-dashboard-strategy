@@ -87,12 +87,21 @@ export function createOverviewSection(data) {
   }
 
   if (showMotionSummary) {
-  summaryCards.push({
-    type: "custom:simon42-summary-card",
-    summary_type: "motion",
-    areas_options: config.areas_options || {}
-  });
-}
+    summaryCards.push({
+      type: "custom:simon42-summary-card",
+      summary_type: "motion",
+      areas_options: config.areas_options || {}
+    });
+  }
+
+  const showCO2Summary = config.show_co2_summary === true;
+  if (showCO2Summary) {
+    summaryCards.push({
+      type: "custom:simon42-summary-card",
+      summary_type: "co2",
+      areas_options: config.areas_options || {}
+    });
+  }
 
   const showBatteriesSummary = config.show_batteries_summary !== false;
   if (showSecuritySummary) {
