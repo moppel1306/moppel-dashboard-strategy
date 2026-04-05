@@ -404,59 +404,53 @@ export function attachFavoritesDragAndDropListeners(element, onOrderChange) {
   const list = element.querySelector('#favorites-list');
   if (!list) return;
 
-  const items = list.querySelectorAll('.favorite-item');
-  let draggedElement = null;
+  let draggedItem = null;
 
-  const handleDragStart = (ev) => {
-    const dragHandle = ev.target.closest('.drag-handle');
-    if (!dragHandle) { ev.preventDefault(); return; }
-    const item = ev.target.closest('.favorite-item');
-    if (!item) { ev.preventDefault(); return; }
-    item.classList.add('dragging');
-    ev.dataTransfer.effectAllowed = 'move';
-    draggedElement = item;
-  };
-  const handleDragEnd = (ev) => {
-    const item = ev.target.closest('.favorite-item');
-    if (item) item.classList.remove('dragging');
-    list.querySelectorAll('.favorite-item').forEach(i => i.classList.remove('drag-over'));
-  };
-  const handleDragOver = (ev) => {
-    ev.preventDefault();
-    ev.dataTransfer.dropEffect = 'move';
-    const item = ev.currentTarget;
-    if (item !== draggedElement) item.classList.add('drag-over');
-    return false;
-  };
-  const handleDragLeave = (ev) => {
-    ev.currentTarget.classList.remove('drag-over');
-  };
-  const handleDrop = (ev) => {
-    ev.stopPropagation();
-    ev.preventDefault();
-    const dropTarget = ev.currentTarget;
-    dropTarget.classList.remove('drag-over');
-    if (draggedElement && draggedElement !== dropTarget) {
-      const allItems = Array.from(list.querySelectorAll('.favorite-item'));
-      const draggedIndex = allItems.indexOf(draggedElement);
-      const dropIndex = allItems.indexOf(dropTarget);
-      if (draggedIndex < dropIndex) {
-        dropTarget.parentNode.insertBefore(draggedElement, dropTarget.nextSibling);
-      } else {
-        dropTarget.parentNode.insertBefore(draggedElement, dropTarget);
+  const handles = list.querySelectorAll('.favorite-item .drag-handle');
+  handles.forEach(handle => {
+    handle.setAttribute('draggable', 'true');
+
+    handle.addEventListener('dragstart', (ev) => {
+      draggedItem = handle.closest('.favorite-item');
+      if (!draggedItem) return;
+      draggedItem.classList.add('dragging');
+      ev.dataTransfer.effectAllowed = 'move';
+    });
+
+    handle.addEventListener('dragend', () => {
+      if (draggedItem) draggedItem.classList.remove('dragging');
+      list.querySelectorAll('.favorite-item').forEach(i => i.classList.remove('drag-over'));
+      draggedItem = null;
+    });
+  });
+
+  list.querySelectorAll('.favorite-item').forEach(item => {
+    item.addEventListener('dragover', (ev) => {
+      ev.preventDefault();
+      ev.dataTransfer.dropEffect = 'move';
+      if (item !== draggedItem) item.classList.add('drag-over');
+    });
+
+    item.addEventListener('dragleave', () => {
+      item.classList.remove('drag-over');
+    });
+
+    item.addEventListener('drop', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      item.classList.remove('drag-over');
+      if (draggedItem && draggedItem !== item) {
+        const allItems = Array.from(list.querySelectorAll('.favorite-item'));
+        const di = allItems.indexOf(draggedItem);
+        const ti = allItems.indexOf(item);
+        if (di < ti) {
+          item.parentNode.insertBefore(draggedItem, item.nextSibling);
+        } else {
+          item.parentNode.insertBefore(draggedItem, item);
+        }
+        onOrderChange();
       }
-      onOrderChange();
-    }
-    return false;
-  };
-
-  items.forEach(item => {
-    item.setAttribute('draggable', 'true');
-    item.addEventListener('dragstart', handleDragStart);
-    item.addEventListener('dragend', handleDragEnd);
-    item.addEventListener('dragover', handleDragOver);
-    item.addEventListener('drop', handleDrop);
-    item.addEventListener('dragleave', handleDragLeave);
+    });
   });
 }
 
@@ -464,59 +458,53 @@ export function attachRoomPinsDragAndDropListeners(element, onOrderChange) {
   const list = element.querySelector('#room-pins-list');
   if (!list) return;
 
-  const items = list.querySelectorAll('.room-pin-item');
-  let draggedElement = null;
+  let draggedItem = null;
 
-  const handleDragStart = (ev) => {
-    const dragHandle = ev.target.closest('.drag-handle');
-    if (!dragHandle) { ev.preventDefault(); return; }
-    const item = ev.target.closest('.room-pin-item');
-    if (!item) { ev.preventDefault(); return; }
-    item.classList.add('dragging');
-    ev.dataTransfer.effectAllowed = 'move';
-    draggedElement = item;
-  };
-  const handleDragEnd = (ev) => {
-    const item = ev.target.closest('.room-pin-item');
-    if (item) item.classList.remove('dragging');
-    list.querySelectorAll('.room-pin-item').forEach(i => i.classList.remove('drag-over'));
-  };
-  const handleDragOver = (ev) => {
-    ev.preventDefault();
-    ev.dataTransfer.dropEffect = 'move';
-    const item = ev.currentTarget;
-    if (item !== draggedElement) item.classList.add('drag-over');
-    return false;
-  };
-  const handleDragLeave = (ev) => {
-    ev.currentTarget.classList.remove('drag-over');
-  };
-  const handleDrop = (ev) => {
-    ev.stopPropagation();
-    ev.preventDefault();
-    const dropTarget = ev.currentTarget;
-    dropTarget.classList.remove('drag-over');
-    if (draggedElement && draggedElement !== dropTarget) {
-      const allItems = Array.from(list.querySelectorAll('.room-pin-item'));
-      const draggedIndex = allItems.indexOf(draggedElement);
-      const dropIndex = allItems.indexOf(dropTarget);
-      if (draggedIndex < dropIndex) {
-        dropTarget.parentNode.insertBefore(draggedElement, dropTarget.nextSibling);
-      } else {
-        dropTarget.parentNode.insertBefore(draggedElement, dropTarget);
+  const handles = list.querySelectorAll('.room-pin-item .drag-handle');
+  handles.forEach(handle => {
+    handle.setAttribute('draggable', 'true');
+
+    handle.addEventListener('dragstart', (ev) => {
+      draggedItem = handle.closest('.room-pin-item');
+      if (!draggedItem) return;
+      draggedItem.classList.add('dragging');
+      ev.dataTransfer.effectAllowed = 'move';
+    });
+
+    handle.addEventListener('dragend', () => {
+      if (draggedItem) draggedItem.classList.remove('dragging');
+      list.querySelectorAll('.room-pin-item').forEach(i => i.classList.remove('drag-over'));
+      draggedItem = null;
+    });
+  });
+
+  list.querySelectorAll('.room-pin-item').forEach(item => {
+    item.addEventListener('dragover', (ev) => {
+      ev.preventDefault();
+      ev.dataTransfer.dropEffect = 'move';
+      if (item !== draggedItem) item.classList.add('drag-over');
+    });
+
+    item.addEventListener('dragleave', () => {
+      item.classList.remove('drag-over');
+    });
+
+    item.addEventListener('drop', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      item.classList.remove('drag-over');
+      if (draggedItem && draggedItem !== item) {
+        const allItems = Array.from(list.querySelectorAll('.room-pin-item'));
+        const di = allItems.indexOf(draggedItem);
+        const ti = allItems.indexOf(item);
+        if (di < ti) {
+          item.parentNode.insertBefore(draggedItem, item.nextSibling);
+        } else {
+          item.parentNode.insertBefore(draggedItem, item);
+        }
+        onOrderChange();
       }
-      onOrderChange();
-    }
-    return false;
-  };
-
-  items.forEach(item => {
-    item.setAttribute('draggable', 'true');
-    item.addEventListener('dragstart', handleDragStart);
-    item.addEventListener('dragend', handleDragEnd);
-    item.addEventListener('dragover', handleDragOver);
-    item.addEventListener('drop', handleDrop);
-    item.addEventListener('dragleave', handleDragLeave);
+    });
   });
 }
 
