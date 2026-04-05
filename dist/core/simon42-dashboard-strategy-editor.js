@@ -11,6 +11,7 @@ import {
   attachRoomViewsCheckboxListener,
   attachGroupByFloorsCheckboxListener, // NEU
   attachCoversSummaryCheckboxListener,
+  attachMotionSummaryCheckboxListener,
   attachAreaCheckboxListeners,
   attachDragAndDropListeners,
   attachExpandButtonListeners,
