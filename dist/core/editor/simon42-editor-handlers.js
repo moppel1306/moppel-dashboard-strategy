@@ -400,6 +400,126 @@ export function attachDragAndDropListeners(element, onOrderChange) {
   });
 }
 
+export function attachFavoritesDragAndDropListeners(element, onOrderChange) {
+  const list = element.querySelector('#favorites-list');
+  if (!list) return;
+
+  const items = list.querySelectorAll('.favorite-item');
+  let draggedElement = null;
+
+  const handleDragStart = (ev) => {
+    const dragHandle = ev.target.closest('.drag-handle');
+    if (!dragHandle) { ev.preventDefault(); return; }
+    const item = ev.target.closest('.favorite-item');
+    if (!item) { ev.preventDefault(); return; }
+    item.classList.add('dragging');
+    ev.dataTransfer.effectAllowed = 'move';
+    draggedElement = item;
+  };
+  const handleDragEnd = (ev) => {
+    const item = ev.target.closest('.favorite-item');
+    if (item) item.classList.remove('dragging');
+    list.querySelectorAll('.favorite-item').forEach(i => i.classList.remove('drag-over'));
+  };
+  const handleDragOver = (ev) => {
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = 'move';
+    const item = ev.currentTarget;
+    if (item !== draggedElement) item.classList.add('drag-over');
+    return false;
+  };
+  const handleDragLeave = (ev) => {
+    ev.currentTarget.classList.remove('drag-over');
+  };
+  const handleDrop = (ev) => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    const dropTarget = ev.currentTarget;
+    dropTarget.classList.remove('drag-over');
+    if (draggedElement && draggedElement !== dropTarget) {
+      const allItems = Array.from(list.querySelectorAll('.favorite-item'));
+      const draggedIndex = allItems.indexOf(draggedElement);
+      const dropIndex = allItems.indexOf(dropTarget);
+      if (draggedIndex < dropIndex) {
+        dropTarget.parentNode.insertBefore(draggedElement, dropTarget.nextSibling);
+      } else {
+        dropTarget.parentNode.insertBefore(draggedElement, dropTarget);
+      }
+      onOrderChange();
+    }
+    return false;
+  };
+
+  items.forEach(item => {
+    item.setAttribute('draggable', 'true');
+    item.addEventListener('dragstart', handleDragStart);
+    item.addEventListener('dragend', handleDragEnd);
+    item.addEventListener('dragover', handleDragOver);
+    item.addEventListener('drop', handleDrop);
+    item.addEventListener('dragleave', handleDragLeave);
+  });
+}
+
+export function attachRoomPinsDragAndDropListeners(element, onOrderChange) {
+  const list = element.querySelector('#room-pins-list');
+  if (!list) return;
+
+  const items = list.querySelectorAll('.room-pin-item');
+  let draggedElement = null;
+
+  const handleDragStart = (ev) => {
+    const dragHandle = ev.target.closest('.drag-handle');
+    if (!dragHandle) { ev.preventDefault(); return; }
+    const item = ev.target.closest('.room-pin-item');
+    if (!item) { ev.preventDefault(); return; }
+    item.classList.add('dragging');
+    ev.dataTransfer.effectAllowed = 'move';
+    draggedElement = item;
+  };
+  const handleDragEnd = (ev) => {
+    const item = ev.target.closest('.room-pin-item');
+    if (item) item.classList.remove('dragging');
+    list.querySelectorAll('.room-pin-item').forEach(i => i.classList.remove('drag-over'));
+  };
+  const handleDragOver = (ev) => {
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = 'move';
+    const item = ev.currentTarget;
+    if (item !== draggedElement) item.classList.add('drag-over');
+    return false;
+  };
+  const handleDragLeave = (ev) => {
+    ev.currentTarget.classList.remove('drag-over');
+  };
+  const handleDrop = (ev) => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    const dropTarget = ev.currentTarget;
+    dropTarget.classList.remove('drag-over');
+    if (draggedElement && draggedElement !== dropTarget) {
+      const allItems = Array.from(list.querySelectorAll('.room-pin-item'));
+      const draggedIndex = allItems.indexOf(draggedElement);
+      const dropIndex = allItems.indexOf(dropTarget);
+      if (draggedIndex < dropIndex) {
+        dropTarget.parentNode.insertBefore(draggedElement, dropTarget.nextSibling);
+      } else {
+        dropTarget.parentNode.insertBefore(draggedElement, dropTarget);
+      }
+      onOrderChange();
+    }
+    return false;
+  };
+
+  items.forEach(item => {
+    item.setAttribute('draggable', 'true');
+    item.addEventListener('dragstart', handleDragStart);
+    item.addEventListener('dragend', handleDragEnd);
+    item.addEventListener('dragover', handleDragOver);
+    item.addEventListener('drop', handleDrop);
+    item.addEventListener('dragleave', handleDragLeave);
+  });
+}
+
 // Helper-Funktionen
 
 async function getAreaGroupedEntities(areaId, hass) {
