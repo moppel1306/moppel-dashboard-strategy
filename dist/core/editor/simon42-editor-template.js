@@ -3,7 +3,7 @@
 // ====================================================================
 // HTML-Template für den Dashboard Strategy Editor
 
-export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary }) {
+export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary, showLightsSummary, showSecuritySummary }) {
   return `
     <div class="card-config">
       <div class="section">
@@ -119,6 +119,17 @@ export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy,
         <div class="form-row">
           <input 
             type="checkbox" 
+            id="show-lights-summary" 
+            ${showLightsSummary !== false ? 'checked' : ''}
+          />
+          <label for="show-lights-summary">Licht-Zusammenfassung anzeigen</label>
+        </div>
+        <div class="description">
+          Zeigt die Licht-Zusammenfassungskarte in der Übersicht an.
+        </div>
+        <div class="form-row">
+          <input 
+            type="checkbox" 
             id="show-covers-summary" 
             ${showCoversSummary !== false ? 'checked' : ''}
           />
@@ -137,6 +148,17 @@ export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy,
         </div>
         <div class="description">
           Zeigt die Bewegungsmelder-Zusammenfassungskarte in der Übersicht an.
+        </div>
+        <div class="form-row">
+          <input 
+            type="checkbox" 
+            id="show-security-summary" 
+            ${showSecuritySummary !== false ? 'checked' : ''}
+          />
+          <label for="show-security-summary">Sicherheits-Zusammenfassung anzeigen</label>
+        </div>
+        <div class="description">
+          Zeigt die Sicherheits-Zusammenfassungskarte in der Übersicht an.
         </div>
         <div class="form-row">
           <input 
