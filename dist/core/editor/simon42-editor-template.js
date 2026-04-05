@@ -3,7 +3,7 @@
 // ====================================================================
 // HTML-Template für den Dashboard Strategy Editor
 
-export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary, showLightsSummary, showSecuritySummary }) {
+export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary, showLightsSummary, showSecuritySummary, showCO2Summary }) {
   return `
     <div class="card-config">
       <div class="section">
@@ -170,6 +170,17 @@ export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy,
         </div>
         <div class="description">
           Zeigt die Batterie-Zusammenfassungskarte in der Übersicht an.
+        </div>
+        <div class="form-row">
+          <input 
+            type="checkbox" 
+            id="show-co2-summary" 
+            ${showCO2Summary === true ? 'checked' : ''}
+          />
+          <label for="show-co2-summary">CO₂-Zusammenfassung anzeigen</label>
+        </div>
+        <div class="description">
+          Zeigt die CO₂-Zusammenfassungskarte in der Übersicht an (Räume über 1400 ppm).
         </div>
       </div>
 
