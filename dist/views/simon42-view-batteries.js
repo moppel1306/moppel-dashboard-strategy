@@ -9,7 +9,38 @@ import { getExcludedLabels } from '../utils/simon42-helpers.js';
 class Simon42ViewBatteriesStrategy {
   static async generate(config, hass) {
     const { entities } = config;
-    
+    // Area grouping helpers
+    const orderedAreaIds = (() => {
+      const order = config.config?.areas_display?.order || [];
+      const hidden = config.config?.areas_display?.hidden || [];
+      const all = Object.keys(hass.areas || {});
+      return [...order.filter(id => all.includes(id) && !hidden.includes(id)), ...all.filter(id => !order.includes(id) && !hidden.includes(id))];
+    })();
+
+    const getAreaId = (entityId) => {
+      const reg = (hass.entities || {})[entityId];
+      if (reg?.area_id) return reg.area_id;
+      const dev = reg?.device_id ? (hass.devices || {})[reg.device_id] : null;
+      return dev?.area_id || null;
+    };
+
+    const withAreaGroups = (entityIds, tileMapper) => {
+      const byArea = {};
+      entityIds.forEach(id => {
+        const aId = getAreaId(id) || '__none__';
+        if (!byArea[aId]) byArea[aId] = [];
+        byArea[aId].push(id);
+      });
+      const cards = [];
+      orderedAreaIds.forEach(aId => {
+        if (!byArea[aId]) return;
+        const name = (hass.areas || {})[aId]?.name;
+        if (name) cards.push({ type: "heading", heading: name, heading_style: "subtitle", icon: "mdi:floor-plan" });
+        byArea[aId].forEach(id => cards.push(tileMapper(id)));
+      });
+      if (byArea['__none__']) byArea['__none__'].forEach(id => cards.push(tileMapper(id)));
+      return cards;
+    };
     const excludeLabels = getExcludedLabels(entities);
     const excludeSet = new Set(excludeLabels);
     
