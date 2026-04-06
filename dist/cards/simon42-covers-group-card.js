@@ -174,114 +174,95 @@ class Simon42CoversGroupCard extends HTMLElement {
     return name.trim() || state.attributes.friendly_name;
   }
 
+  _getAreaName(entityId) {
+    const reg = this._entities.find(e => e.entity_id === entityId);
+    if (!reg) return null;
+    const areaId = reg.area_id || (reg.device_id ? this._hass.devices?.[reg.device_id]?.area_id : null);
+    return areaId ? (this._hass.areas?.[areaId]?.name || null) : null;
+  }
+
+  _groupByArea(covers) {
+    const areaOrder = this._config.config?.areas_display?.order || [];
+    const hiddenAreas = this._config.config?.areas_display?.hidden || [];
+    const allAreaIds = Object.keys(this._hass.areas || {});
+    const ordered = [
+      ...areaOrder.filter(id => allAreaIds.includes(id) && !hiddenAreas.includes(id)),
+      ...allAreaIds.filter(id => !areaOrder.includes(id) && !hiddenAreas.includes(id))
+    ];
+    const byArea = {};
+    covers.forEach(id => {
+      const name = this._getAreaName(id) || '__none__';
+      if (!byArea[name]) byArea[name] = [];
+      byArea[name].push(id);
+    });
+    const result = [];
+    ordered.forEach(areaId => {
+      const name = this._hass.areas?.[areaId]?.name;
+      if (name && byArea[name]) { result.push({ name, covers: byArea[name] }); delete byArea[name]; }
+    });
+    Object.keys(byArea).sort().forEach(name => { if (name !== '__none__') result.push({ name, covers: byArea[name] }); });
+    if (byArea['__none__']) result.push({ name: null, covers: byArea['__none__'] });
+    return result;
+  }
+
   _render() {
     if (!this._hass) return;
-    
     const covers = this._getRelevantCovers();
     const isOpen = this._config.group_type === 'open';
-    
-    if (covers.length === 0) {
-      this.style.display = 'none';
-      return;
-    }
-    
+    if (covers.length === 0) { this.style.display = 'none'; return; }
     this.style.display = 'block';
-    
+
     const icon = isOpen ? '🪟' : '🔒';
     const title = isOpen ? 'Offene Rollos & Vorhänge' : 'Geschlossene Rollos & Vorhänge';
-    const headingStyle = isOpen ? 'title' : 'subtitle';
     const actionIcon = isOpen ? 'mdi:arrow-down' : 'mdi:arrow-up';
     const actionService = isOpen ? 'close_cover' : 'open_cover';
-    
-    // Erstelle HTML
+    const groups = this._groupByArea(covers);
+
+    let groupsHTML = '';
+    groups.forEach(({ name }) => {
+      groupsHTML += `${name ? `<div class="area-heading">${name}</div>` : ''}<div class="cover-grid"></div>`;
+    });
+
     this.innerHTML = `
       <style>
-        .covers-section {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          width: 100%;
-        }
-        .section-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 8px 0;
-        }
-        .section-heading {
-          font-size: ${isOpen ? '20px' : '16px'};
-          font-weight: ${isOpen ? '500' : '400'};
-          margin: 0;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-        .batch-button {
-          padding: 8px 12px;
-          border-radius: 18px;
-          background: var(--primary-color);
-          color: var(--text-primary-color);
-          border: none;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          font-size: 14px;
-        }
-        .batch-button:hover {
-          background: var(--primary-color-dark);
-        }
-        .batch-button ha-icon {
-          --mdc-icon-size: 18px;
-        }
-        .cover-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 8px;
-        }
+        .covers-section { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .section-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+        .section-heading { font-size: ${isOpen ? '20px' : '16px'}; font-weight: ${isOpen ? '500' : '400'}; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .batch-button { padding: 8px 12px; border-radius: 18px; background: var(--primary-color); color: var(--text-primary-color); border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 14px; }
+        .batch-button:hover { background: var(--primary-color-dark); }
+        .batch-button ha-icon { --mdc-icon-size: 18px; }
+        .area-heading { font-size: 13px; font-weight: 500; color: var(--secondary-text-color); padding: 8px 4px 4px 4px; }
+        .cover-grid { display: flex; flex-direction: column; gap: 8px; }
       </style>
       <div class="covers-section">
         <div class="section-header">
-          <h${isOpen ? '2' : '3'} class="section-heading">
-            ${icon} ${title} (${covers.length})
-          </h${isOpen ? '2' : '3'}>
+          <h${isOpen ? '2' : '3'} class="section-heading">${icon} ${title} (${covers.length})</h${isOpen ? '2' : '3'}>
           <button class="batch-button" id="batch-action">
             <ha-icon icon="${actionIcon}"></ha-icon>
             Alle ${isOpen ? 'schließen' : 'öffnen'}
           </button>
         </div>
-        <div class="cover-grid" id="cover-grid"></div>
+        ${groupsHTML}
       </div>
     `;
-    
-    // Batch-Action Button Event
-    const batchButton = this.querySelector('#batch-action');
-    if (batchButton) {
-      batchButton.addEventListener('click', () => {
-        this._hass.callService('cover', actionService, {
-          entity_id: covers
-        });
+
+    this.querySelector('#batch-action')?.addEventListener('click', () => {
+      this._hass.callService('cover', actionService, { entity_id: covers });
+    });
+
+    const grids = this.querySelectorAll('.cover-grid');
+    groups.forEach(({ covers: groupCovers }, i) => {
+      const grid = grids[i];
+      if (!grid) return;
+      groupCovers.forEach(entityId => {
+        const card = document.createElement('hui-tile-card');
+        card.hass = this._hass;
+        card.setConfig({ type: 'tile', entity: entityId, name: this._stripCoverType(entityId), features: [{ type: 'cover-open-close' }], vertical: false, features_position: 'inline', state_content: ['current_position', 'last_changed'] });
+        grid.appendChild(card);
       });
-    }
-    
-    // Erstelle die Tile-Cards
-    const grid = this.querySelector('#cover-grid');
-    covers.forEach(entityId => {
-      const card = document.createElement('hui-tile-card');
-      card.hass = this._hass;
-      card.setConfig({
-        type: 'tile',
-        entity: entityId,
-        name: this._stripCoverType(entityId),
-        features: [{ type: 'cover-open-close' }],
-        vertical: false,
-        features_position: 'inline', // FIX: Features inline anzeigen
-        state_content: ['current_position', 'last_changed']
-      });
-      grid.appendChild(card);
     });
   }
-
+  
   getCardSize() {
     const covers = this._getRelevantCovers();
     return Math.ceil(covers.length / 3) + 1;
