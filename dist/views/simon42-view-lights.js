@@ -1,13 +1,18 @@
 // ====================================================================
 // VIEW STRATEGY - LICHTER (gruppiert nach Etage → Raum → Status)
 // ====================================================================
-import { getExcludedLabels } from '../utils/simon42-helpers.js';
+
+// Kein Import nötig - Labels direkt aus hass.entities lesen
+// import { getExcludedLabels } from '../utils/simon42-helpers.js';
 
 class Simon42ViewLightsStrategy {
   static async generate(config, hass) {
-    const excludeLabels = getExcludedLabels(config.config);
-    const areasOptions = config.config?.areas_options || {};
-
+    const excludeLabelIds = config.config?.exclude_labels || [];
+    const excludeLabels = new Set(
+      Object.keys(hass.entities || {}).filter(id =>
+        (hass.entities[id]?.labels || []).some(l => excludeLabelIds.includes(l))
+      )
+    );
     // Alle Lichter sammeln und filtern
     const allLights = Object.keys(hass.states).filter(id => {
       if (!id.startsWith('light.')) return false;
