@@ -1,8 +1,12 @@
 // ====================================================================
-// VIEW STRATEGY - LICHTER (gruppiert nach Etage → Raum → Status)
+// VIEW STRATEGY - LICHTER (gruppiert nach Dashboard-Reihenfolge)
 // ====================================================================
 class Simon42ViewLightsStrategy {
   static async generate(config, hass) {
+
+    const dashboardConfig = config.config || {};
+    const areaOrder = dashboardConfig.areas_display?.order || [];
+    const hiddenAreas = dashboardConfig.areas_display?.hidden || [];
 
     const allLights = Object.keys(hass.states).filter(id => {
       if (!id.startsWith('light.')) return false;
@@ -27,50 +31,40 @@ class Simon42ViewLightsStrategy {
       return null;
     };
 
-    const getFloorName = (areaId) => {
-      const areas = hass.areas || {};
-      const floors = hass.floors || {};
-      const area = areas[areaId];
-      if (!area || !area.floor_id) return 'Sonstige';
-      const floor = floors[area.floor_id];
-      return floor ? floor.name : 'Sonstige';
-    };
-
-    const getFloorLevel = (areaId) => {
-      const areas = hass.areas || {};
-      const floors = hass.floors || {};
-      const area = areas[areaId];
-      if (!area || !area.floor_id) return 999;
-      const floor = floors[area.floor_id];
-      return floor && floor.level != null ? floor.level : 999;
-    };
-
     const getAreaName = (areaId) => {
-      const areas = hass.areas || {};
-      return areas[areaId] ? areas[areaId].name : areaId;
+      return (hass.areas || {})[areaId]?.name || areaId;
     };
 
-    const onLights  = allLights.filter(id => hass.states[id] && hass.states[id].state === 'on');
+    const onLights  = allLights.filter(id => hass.states[id]?.state === 'on');
     const offLights = allLights.filter(id => !hass.states[id] || hass.states[id].state !== 'on');
 
-    const groupByFloorAndArea = (lights) => {
-      const groups = {};
+    // Gruppiere nach Area in Dashboard-Reihenfolge
+    const groupByArea = (lights) => {
+      const byArea = {};
       lights.forEach(id => {
-        const areaId    = getAreaId(id);
-        const floorName = areaId ? getFloorName(areaId) : 'Sonstige';
-        const floorLvl  = areaId ? getFloorLevel(areaId) : 999;
-        const areaName  = areaId ? getAreaName(areaId) : 'Kein Bereich';
-        if (!groups[floorName]) groups[floorName] = { level: floorLvl, areas: {} };
-        if (!groups[floorName].areas[areaName]) groups[floorName].areas[areaName] = [];
-        groups[floorName].areas[areaName].push(id);
+        const areaId = getAreaId(id) || '__none__';
+        if (!byArea[areaId]) byArea[areaId] = [];
+        byArea[areaId].push(id);
       });
-      return groups;
+
+      const allAreaIds = Object.keys(hass.areas || {});
+      const ordered = [
+        ...areaOrder.filter(id => allAreaIds.includes(id) && !hiddenAreas.includes(id)),
+        ...allAreaIds.filter(id => !areaOrder.includes(id) && !hiddenAreas.includes(id))
+      ];
+
+      const result = [];
+      ordered.forEach(areaId => {
+        if (byArea[areaId]) result.push({ areaId, lights: byArea[areaId] });
+      });
+      if (byArea['__none__']) result.push({ areaId: '__none__', lights: byArea['__none__'] });
+      return result;
     };
 
     const buildSections = (lights, label, icon, service) => {
       const sections = [];
 
-      // Heading + "Alle" Button nebeneinander
+      // Status-Heading in eigener Section
       sections.push({
         type: "grid",
         cards: [
@@ -79,7 +73,14 @@ class Simon42ViewLightsStrategy {
             heading: `${label} (${lights.length})`,
             heading_style: "title",
             icon
-          },
+          }
+        ]
+      });
+
+      // "Alle"-Button in eigener Section
+      sections.push({
+        type: "grid",
+        cards: [
           {
             type: "button",
             name: service === 'light.turn_off' ? 'Alle ausschalten' : 'Alle einschalten',
@@ -94,40 +95,34 @@ class Simon42ViewLightsStrategy {
       });
 
       if (lights.length === 0) {
-        sections.push({ type: "grid", cards: [{ type: "markdown", content: `Keine ${label.toLowerCase()}.` }] });
+        sections.push({
+          type: "grid",
+          cards: [{ type: "markdown", content: `Keine ${label.toLowerCase()}.` }]
+        });
         return sections;
       }
 
-      const groups = groupByFloorAndArea(lights);
-
-      // Sortiere Etagen alphabetisch nach Name
-      const sortedFloors = Object.entries(groups)
-        .sort((a, b) => a[0].localeCompare(b[0], 'de'));
-
-      sortedFloors.forEach(([floorName, floorData]) => {
-        const sortedAreas = Object.entries(floorData.areas)
-          .sort((a, b) => a[0].localeCompare(b[0], 'de'));
-
-        sortedAreas.forEach(([areaName, ids]) => {
-          sections.push({
-            type: "grid",
-            cards: [
-              {
-                type: "heading",
-                heading: `${floorName} · ${areaName}`,
-                heading_style: "subtitle",
-                icon: "mdi:floor-plan"
-              },
-              ...ids.map(id => ({
-                type: "tile",
-                entity: id,
-                state_color: true,
-                features: [{ type: "light-brightness" }],
-                features_position: "inline",
-                vertical: false
-              }))
-            ]
-          });
+      const groups = groupByArea(lights);
+      groups.forEach(({ areaId, lights: areaLights }) => {
+        const areaName = areaId === '__none__' ? 'Kein Bereich' : getAreaName(areaId);
+        sections.push({
+          type: "grid",
+          cards: [
+            {
+              type: "heading",
+              heading: areaName,
+              heading_style: "subtitle",
+              icon: "mdi:floor-plan"
+            },
+            ...areaLights.map(id => ({
+              type: "tile",
+              entity: id,
+              state_color: true,
+              features: [{ type: "light-brightness" }],
+              features_position: "inline",
+              vertical: false
+            }))
+          ]
         });
       });
 
