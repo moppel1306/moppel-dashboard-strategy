@@ -4,7 +4,6 @@
 class Simon42ViewLightsStrategy {
   static async generate(config, hass) {
 
-    // Alle Lichter sammeln
     const allLights = Object.keys(hass.states).filter(id => {
       if (!id.startsWith('light.')) return false;
       const state = hass.states[id];
@@ -68,11 +67,30 @@ class Simon42ViewLightsStrategy {
       return groups;
     };
 
-    const buildSections = (lights, label, icon) => {
+    const buildSections = (lights, label, icon, service) => {
       const sections = [];
+
+      // Heading + "Alle" Button nebeneinander
       sections.push({
         type: "grid",
-        cards: [{ type: "heading", heading: `${label} (${lights.length})`, heading_style: "title", icon }]
+        cards: [
+          {
+            type: "heading",
+            heading: `${label} (${lights.length})`,
+            heading_style: "title",
+            icon
+          },
+          {
+            type: "button",
+            name: service === 'light.turn_off' ? 'Alle ausschalten' : 'Alle einschalten',
+            icon: service === 'light.turn_off' ? 'mdi:lightbulb-off' : 'mdi:lightbulb-on',
+            tap_action: {
+              action: "call-service",
+              service,
+              target: { entity_id: lights }
+            }
+          }
+        ]
       });
 
       if (lights.length === 0) {
@@ -81,15 +99,25 @@ class Simon42ViewLightsStrategy {
       }
 
       const groups = groupByFloorAndArea(lights);
-      const sortedFloors = Object.entries(groups).sort((a, b) => a[1].level - b[1].level);
+
+      // Sortiere Etagen alphabetisch nach Name
+      const sortedFloors = Object.entries(groups)
+        .sort((a, b) => a[0].localeCompare(b[0], 'de'));
 
       sortedFloors.forEach(([floorName, floorData]) => {
-        const sortedAreas = Object.entries(floorData.areas).sort((a, b) => a[0].localeCompare(b[0]));
+        const sortedAreas = Object.entries(floorData.areas)
+          .sort((a, b) => a[0].localeCompare(b[0], 'de'));
+
         sortedAreas.forEach(([areaName, ids]) => {
           sections.push({
             type: "grid",
             cards: [
-              { type: "heading", heading: `${floorName} · ${areaName}`, heading_style: "subtitle", icon: "mdi:floor-plan" },
+              {
+                type: "heading",
+                heading: `${floorName} · ${areaName}`,
+                heading_style: "subtitle",
+                icon: "mdi:floor-plan"
+              },
               ...ids.map(id => ({
                 type: "tile",
                 entity: id,
@@ -109,8 +137,8 @@ class Simon42ViewLightsStrategy {
     return {
       type: "sections",
       sections: [
-        ...buildSections(onLights,  'Eingeschaltete Lichter', 'mdi:lightbulb-on'),
-        ...buildSections(offLights, 'Ausgeschaltete Lichter', 'mdi:lightbulb-off')
+        ...buildSections(onLights,  'Eingeschaltete Lichter', 'mdi:lightbulb-on',  'light.turn_off'),
+        ...buildSections(offLights, 'Ausgeschaltete Lichter', 'mdi:lightbulb-off', 'light.turn_on')
       ]
     };
   }
