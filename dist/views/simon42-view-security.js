@@ -141,11 +141,8 @@ class Simon42ViewSecurityStrategy {
             }
           ]
         });
-        lockCards.push(...locksUnlocked.map(entity => ({
-          type: "tile",
-          entity: entity,
-          features: [{ type: "lock-commands" }],
-          state_content: "last_changed"
+        lockCards.push(...withAreaGroups(locksUnlocked, entity => ({
+          type: "tile", entity, features: [{ type: "lock-commands" }], state_content: "last_changed"
         })));
       }
       
@@ -155,11 +152,8 @@ class Simon42ViewSecurityStrategy {
           heading: "🔒 Schlösser - Verriegelt",
           heading_style: "subtitle"
         });
-        lockCards.push(...locksLocked.map(entity => ({
-          type: "tile",
-          entity: entity,
-          features: [{ type: "lock-commands" }],
-          state_content: "last_changed"
+        lockCards.push(...withAreaGroups(locksLocked, entity => ({
+          type: "tile", entity, features: [{ type: "lock-commands" }], state_content: "last_changed"
         })));
       }
       
@@ -198,12 +192,8 @@ class Simon42ViewSecurityStrategy {
             }
           ]
         });
-        doorCards.push(...doorsOpen.map(entity => ({
-          type: "tile",
-          entity: entity,
-          features: [{ type: "cover-open-close" }],
-          features_position: "inline",
-          state_content: "last_changed"
+        doorCards.push(...withAreaGroups(doorsOpen, entity => ({
+          type: "tile", entity, features: [{ type: "cover-open-close" }], features_position: "inline", state_content: "last_changed"
         })));
       }
       
@@ -213,12 +203,8 @@ class Simon42ViewSecurityStrategy {
           heading: "🚪 Türen & Tore - Geschlossen",
           heading_style: "subtitle"
         });
-        doorCards.push(...doorsClosed.map(entity => ({
-          type: "tile",
-          entity: entity,
-          features: [{ type: "cover-open-close" }],
-          features_position: "inline",
-          state_content: "last_changed"
+        doorCards.push(...withAreaGroups(doorsClosed, entity => ({
+          type: "tile", entity, features: [{ type: "cover-open-close" }], features_position: "inline", state_content: "last_changed"
         })));
       }
       
@@ -257,9 +243,8 @@ class Simon42ViewSecurityStrategy {
             }
           ]
         });
-        garageCards.push(...garagesOpen.map(entity => ({
-          type: "tile",
-          entity: entity,
+        garageCards.push(...withAreaGroups(garagesOpen, entity => ({
+          type: "tile", entity,
           features: [{ type: "cover-open-close" }],
           features_position: "inline",
           state_content: "last_changed"
@@ -272,9 +257,8 @@ class Simon42ViewSecurityStrategy {
           heading: "🏠 Garagen - Geschlossen",
           heading_style: "subtitle"
         });
-        garageCards.push(...garagesClosed.map(entity => ({
-          type: "tile",
-          entity: entity,
+        garageCards.push(...withAreaGroups(garagesClosed, entity => ({
+          type: "tile", entity,
           features: [{ type: "cover-open-close" }],
           features_position: "inline",
           state_content: "last_changed"
@@ -302,10 +286,8 @@ class Simon42ViewSecurityStrategy {
           heading: "🪟 Fenster & Öffnungen - Offen",
           heading_style: "subtitle"
         });
-        windowCards.push(...windowsOpen.map(entity => ({
-          type: "tile",
-          entity: entity,
-          state_content: "last_changed"
+        windowCards.push(...withAreaGroups(windowsOpen, entity => ({
+          type: "tile", entity, state_content: "last_changed"
         })));
       }
       
@@ -315,10 +297,8 @@ class Simon42ViewSecurityStrategy {
           heading: "🪟 Fenster & Öffnungen - Geschlossen",
           heading_style: "subtitle"
         });
-        windowCards.push(...windowsClosed.map(entity => ({
-          type: "tile",
-          entity: entity,
-          state_content: "last_changed"
+        windowCards.push(...withAreaGroups(windowsClosed, entity => ({
+          type: "tile", entity, state_content: "last_changed"
         })));
       }
       
