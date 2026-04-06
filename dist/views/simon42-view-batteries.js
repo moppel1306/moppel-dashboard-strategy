@@ -114,12 +114,8 @@ class Simon42ViewBatteriesStrategy {
             heading: `🔴 Kritisch (< 20%) - ${critical.length} ${critical.length === 1 ? 'Batterie' : 'Batterien'}`,
             heading_style: "title"
           },
-          ...critical.map(entity => ({
-            type: "tile",
-            entity: entity,
-            vertical: false,
-            state_content: ["state", "last_changed"],
-            color: "red"
+          ...withAreaGroups(critical, entity => ({
+            type: "tile", entity, vertical: false, state_content: ["state", "last_changed"], color: "red"
           }))
         ]
       });
@@ -135,12 +131,8 @@ class Simon42ViewBatteriesStrategy {
             heading: `🟡 Niedrig (20-50%) - ${low.length} ${low.length === 1 ? 'Batterie' : 'Batterien'}`,
             heading_style: "title"
           },
-          ...low.map(entity => ({
-            type: "tile",
-            entity: entity,
-            vertical: false,
-            state_content: ["state", "last_changed"],
-            color: "yellow"
+          ...withAreaGroups(low, entity => ({
+            type: "tile", entity, vertical: false, state_content: ["state", "last_changed"], color: "yellow"
           }))
         ]
       });
@@ -156,12 +148,8 @@ class Simon42ViewBatteriesStrategy {
             heading: `🟢 Gut (> 50%) - ${good.length} ${good.length === 1 ? 'Batterie' : 'Batterien'}`,
             heading_style: "title"
           },
-          ...good.map(entity => ({
-            type: "tile",
-            entity: entity,
-            vertical: false,
-            state_content: ["state", "last_changed"],
-            color: "green"
+          ...withAreaGroups(good, entity => ({
+            type: "tile", entity, vertical: false, state_content: ["state", "last_changed"], color: "green"
           }))
         ]
       });
