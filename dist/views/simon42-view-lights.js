@@ -1,5 +1,5 @@
 // ====================================================================
-// VIEW STRATEGY - LICHTER (gruppiert nach Dashboard-Reihenfolge)
+// VIEW STRATEGY - LICHTER (1-spaltig, nach Dashboard-Reihenfolge)
 // ====================================================================
 class Simon42ViewLightsStrategy {
   static async generate(config, hass) {
@@ -38,7 +38,6 @@ class Simon42ViewLightsStrategy {
     const onLights  = allLights.filter(id => hass.states[id]?.state === 'on');
     const offLights = allLights.filter(id => !hass.states[id] || hass.states[id].state !== 'on');
 
-    // Gruppiere nach Area in Dashboard-Reihenfolge
     const groupByArea = (lights) => {
       const byArea = {};
       lights.forEach(id => {
@@ -61,79 +60,71 @@ class Simon42ViewLightsStrategy {
       return result;
     };
 
-    const buildSections = (lights, label, icon, service) => {
-      const sections = [];
+    const buildCards = (lights, label, icon, service) => {
+      const cards = [];
 
-      // Status-Heading in eigener Section
-      sections.push({
-        type: "grid",
-        cards: [
-          {
-            type: "heading",
-            heading: `${label} (${lights.length})`,
-            heading_style: "title",
-            icon
-          }
-        ]
-      });
-
-      // "Alle"-Button in eigener Section
-      sections.push({
-        type: "grid",
-        cards: [
+      // Status-Heading mit Button rechts
+      cards.push({
+        type: "heading",
+        heading: `${label} (${lights.length})`,
+        heading_style: "title",
+        icon,
+        badges: [
           {
             type: "button",
-            name: service === 'light.turn_off' ? 'Alle ausschalten' : 'Alle einschalten',
-            icon: service === 'light.turn_off' ? 'mdi:lightbulb-off' : 'mdi:lightbulb-on',
+            label: service === 'light.turn_off' ? 'Alle ausschalten' : 'Alle einschalten',
             tap_action: {
               action: "call-service",
               service,
-              target: { entity_id: lights }
+              target: { entity_id: lights.length > 0 ? lights : [] }
             }
           }
         ]
       });
 
       if (lights.length === 0) {
-        sections.push({
-          type: "grid",
-          cards: [{ type: "markdown", content: `Keine ${label.toLowerCase()}.` }]
-        });
-        return sections;
+        cards.push({ type: "markdown", content: `Keine ${label.toLowerCase()}.` });
+        return cards;
       }
 
       const groups = groupByArea(lights);
       groups.forEach(({ areaId, lights: areaLights }) => {
         const areaName = areaId === '__none__' ? 'Kein Bereich' : getAreaName(areaId);
-        sections.push({
-          type: "grid",
-          cards: [
-            {
-              type: "heading",
-              heading: areaName,
-              heading_style: "subtitle",
-              icon: "mdi:floor-plan"
-            },
-            ...areaLights.map(id => ({
-              type: "tile",
-              entity: id,
-              state_color: true,
-              features: [{ type: "light-brightness" }],
-              features_position: "inline",
-              vertical: false
-            }))
-          ]
+
+        cards.push({
+          type: "heading",
+          heading: areaName,
+          heading_style: "subtitle",
+          icon: "mdi:floor-plan"
+        });
+
+        areaLights.forEach(id => {
+          cards.push({
+            type: "tile",
+            entity: id,
+            state_color: true,
+            features: [{ type: "light-brightness" }],
+            features_position: "inline",
+            vertical: false
+          });
         });
       });
 
-      return sections;
+      return cards;
     };
+
+    const allCards = [
+      ...buildCards(onLights,  'Eingeschaltete Lichter', 'mdi:lightbulb-on',  'light.turn_off'),
+      ...buildCards(offLights, 'Ausgeschaltete Lichter', 'mdi:lightbulb-off', 'light.turn_on')
+    ];
 
     return {
       type: "sections",
       sections: [
-        ...buildSections(onLights,  'Eingeschaltete Lichter', 'mdi:lightbulb-on',  'light.turn_off'),
-        ...buildSections(offLights, 'Ausgeschaltete Lichter', 'mdi:lightbulb-off', 'light.turn_on')
+        {
+          type: "grid",
+          cards: allCards
+        }
       ]
     };
   }
