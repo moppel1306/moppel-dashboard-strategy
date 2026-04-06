@@ -1,23 +1,7 @@
-// ====================================================================
-// VIEW STRATEGY - BEWEGUNGSMELDER
-// ====================================================================
 class Simon42ViewMotionStrategy {
   static async generate(config, hass) {
     const allEntityIds = Object.keys(hass.states);
 
-    // Alle Bewegungsmelder filtern
-    const motionEntities = allEntityIds.filter(id => {
-      if (!id.startsWith('binary_sensor.')) return false;
-      const state = hass.states[id];
-      if (!state) return false;
-      if (state.attributes?.device_class !== 'motion') return false;
-      const registryEntry = hass.entities?.[id];
-      if (registryEntry?.hidden === true) return false;
-      if (state.attributes?.entity_category === 'config') return false;
-      if (state.attributes?.entity_category === 'diagnostic') return false;
-      return true;
-    });
-    // Area grouping helpers
     const orderedAreaIds = (() => {
       const order = config.config?.areas_display?.order || [];
       const hidden = config.config?.areas_display?.hidden || [];
@@ -49,60 +33,42 @@ class Simon42ViewMotionStrategy {
       if (byArea['__none__']) byArea['__none__'].forEach(id => cards.push(tileMapper(id)));
       return cards;
     };
+
+    const motionEntities = allEntityIds.filter(id => {
+      if (!id.startsWith('binary_sensor.')) return false;
+      const state = hass.states[id];
+      if (!state) return false;
+      if (state.attributes?.device_class !== 'motion') return false;
+      const registryEntry = (hass.entities || {})[id];
+      if (registryEntry?.hidden === true) return false;
+      if (state.attributes?.entity_category === 'config') return false;
+      if (state.attributes?.entity_category === 'diagnostic') return false;
+      return true;
+    });
+
     const active   = motionEntities.filter(id => hass.states[id]?.state === 'on');
     const inactive = motionEntities.filter(id => hass.states[id]?.state !== 'on');
 
-    const activeCards = active.map(id => ({
-      type: 'tile',
-      entity: id,
-      state_color: true
-    }));
-
-    const inactiveCards = inactive.map(id => ({
-      type: 'tile',
-      entity: id,
-      state_color: true
-    }));
-
-    const sections = [];
-
-    // Aktive Sensoren
-    sections.push({
-      type: "grid",
-      cards: [
-        {
-          type: "heading",
-          heading: `Bewegung erkannt (${active.length})`,
-          icon: "mdi:motion-sensor",
-          heading_style: "title"
-        },
-        ...(activeCards.length > 0 ? activeCards : [{
-          type: "markdown",
-          content: "Keine Bewegung wird gerade erkannt."
-        }])
-      ]
-    });
-
-    // Inaktive Sensoren
-    sections.push({
-      type: "grid",
-      cards: [
-        {
-          type: "heading",
-          heading: `Keine Bewegung (${inactive.length})`,
-          icon: "mdi:motion-sensor-off",
-          heading_style: "title"
-        },
-        ...(inactiveCards.length > 0 ? inactiveCards : [{
-          type: "markdown",
-          content: "Alle Sensoren aktiv."
-        }])
-      ]
-    });
+    const tileMapper = id => ({ type: "tile", entity: id, state_color: true });
 
     return {
       type: "sections",
-      sections
+      sections: [
+        {
+          type: "grid",
+          cards: [
+            { type: "heading", heading: `Bewegung erkannt (${active.length})`, heading_style: "title", icon: "mdi:motion-sensor" },
+            ...(active.length > 0 ? withAreaGroups(active, tileMapper) : [{ type: "markdown", content: "Keine Bewegung wird gerade erkannt." }])
+          ]
+        },
+        {
+          type: "grid",
+          cards: [
+            { type: "heading", heading: `Keine Bewegung (${inactive.length})`, heading_style: "title", icon: "mdi:motion-sensor-off" },
+            ...(inactive.length > 0 ? withAreaGroups(inactive, tileMapper) : [{ type: "markdown", content: "Alle Sensoren aktiv." }])
+          ]
+        }
+      ]
     };
   }
 }
