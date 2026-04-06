@@ -63,23 +63,27 @@ class Simon42ViewLightsStrategy {
     const buildCards = (lights, label, icon, service, buttonLabel, buttonIcon) => {
       const cards = [];
 
-      // Heading mit Button
+      // Heading (links, 8 Spalten) und Button (rechts, 4 Spalten) nebeneinander
       cards.push({
         type: "heading",
         heading: `${label} (${lights.length})`,
         heading_style: "title",
         icon,
-        buttons: lights.length > 0 ? [
-          {
-            icon: buttonIcon,
-            name: buttonLabel,
-            tap_action: {
-              action: "perform-action",
-              perform_action: service,
-              target: { entity_id: lights }
-            }
-          }
-        ] : []
+        grid_options: { columns: 8, rows: 1 }
+      });
+
+      cards.push({
+        type: "button",
+        name: buttonLabel,
+        icon: buttonIcon,
+        show_name: true,
+        show_icon: true,
+        tap_action: {
+          action: "perform-action",
+          perform_action: service,
+          target: { entity_id: lights.length > 0 ? lights : [] }
+        },
+        grid_options: { columns: 4, rows: 1 }
       });
 
       if (lights.length === 0) {
