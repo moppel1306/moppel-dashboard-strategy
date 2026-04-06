@@ -60,26 +60,26 @@ class Simon42ViewLightsStrategy {
       return result;
     };
 
-    const buildCards = (lights, label, icon, service) => {
+    const buildCards = (lights, label, icon, service, buttonLabel, buttonIcon) => {
       const cards = [];
 
-      // Status-Heading mit Button rechts
+      // Heading mit Button
       cards.push({
         type: "heading",
         heading: `${label} (${lights.length})`,
         heading_style: "title",
         icon,
-        badges: [
+        buttons: lights.length > 0 ? [
           {
-            type: "button",
-            label: service === 'light.turn_off' ? 'Alle ausschalten' : 'Alle einschalten',
+            icon: buttonIcon,
+            name: buttonLabel,
             tap_action: {
-              action: "call-service",
-              service,
-              target: { entity_id: lights.length > 0 ? lights : [] }
+              action: "perform-action",
+              perform_action: service,
+              target: { entity_id: lights }
             }
           }
-        ]
+        ] : []
       });
 
       if (lights.length === 0) {
@@ -114,18 +114,13 @@ class Simon42ViewLightsStrategy {
     };
 
     const allCards = [
-      ...buildCards(onLights,  'Eingeschaltete Lichter', 'mdi:lightbulb-on',  'light.turn_off'),
-      ...buildCards(offLights, 'Ausgeschaltete Lichter', 'mdi:lightbulb-off', 'light.turn_on')
+      ...buildCards(onLights,  'Eingeschaltete Lichter', 'mdi:lightbulb-on',  'light.turn_off', 'Alle ausschalten', 'mdi:lightbulb-off'),
+      ...buildCards(offLights, 'Ausgeschaltete Lichter', 'mdi:lightbulb-off', 'light.turn_on',  'Alle einschalten', 'mdi:lightbulb-on')
     ];
 
     return {
       type: "sections",
-      sections: [
-        {
-          type: "grid",
-          cards: allCards
-        }
-      ]
+      sections: [{ type: "grid", cards: allCards }]
     };
   }
 }
