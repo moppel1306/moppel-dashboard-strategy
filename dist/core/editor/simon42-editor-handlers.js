@@ -32,6 +32,16 @@ export function attachSearchCardCheckboxListener(element, callback) {
   }
 }
 
+export function attachSearchMaxResultsListener(element, callback) {
+  const input = element.querySelector('#search-max-results');
+  if (input) {
+    input.addEventListener('change', (e) => {
+      const value = parseInt(e.target.value, 10);
+      if (!isNaN(value) && value > 0) callback(value);
+    });
+  }
+}
+
 export function attachSummaryViewsCheckboxListener(element, callback) {
   const summaryViewsCheckbox = element.querySelector('#show-summary-views');
   if (summaryViewsCheckbox) {
