@@ -46,8 +46,10 @@ export function createOverviewSection(data) {
 
   // Füge Search-Card hinzu wenn aktiviert
   if (showSearchCard) {
+    const searchMaxResults = config.search_max_results || 10;
     cards.push({
       type: "custom:search-card",
+      max_results: searchMaxResults,
       grid_options: {
         columns: "full",
       }
