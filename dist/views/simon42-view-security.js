@@ -107,7 +107,11 @@ class Simon42ViewSecurityStrategy {
         if (entityId.startsWith('binary_sensor.')) {
           const deviceClass = state.attributes?.device_class;
           if (['door', 'window', 'garage_door', 'opening'].includes(deviceClass)) {
-            windows.push(entityId);
+            const hassEntry = hass.entities?.[entityId];
+            const labels = hassEntry?.labels || [];
+            if (!labels.includes('no_summary')) {
+              windows.push(entityId);
+            }
           }
         }
       });
