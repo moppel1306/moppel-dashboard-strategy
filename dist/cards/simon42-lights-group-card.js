@@ -36,8 +36,15 @@ class Simon42LightsGroupCard extends HTMLElement {
 
   _calculateExcludeSets() {
     this._excludeSet = new Set();
+    // Prüfe Labels aus hass.entities (aktueller Registry-Stand)
+    const hassEntities = this._hass?.entities || {};
     this._entities.forEach(e => {
-      if (e.labels?.includes("no_dboard") || e.labels?.includes("no_summary")) this._excludeSet.add(e.entity_id);
+      const id = e.entity_id;
+      const hassEntry = hassEntities[id];
+      const labels = hassEntry?.labels || e.labels || [];
+      if (labels.includes("no_dboard") || labels.includes("no_summary")) {
+        this._excludeSet.add(id);
+      }
     });
     this._hiddenFromConfigSet = new Set();
     if (this._config.config?.areas_options) {
