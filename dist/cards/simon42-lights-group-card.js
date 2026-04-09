@@ -37,7 +37,7 @@ class Simon42LightsGroupCard extends HTMLElement {
   _calculateExcludeSets() {
     this._excludeSet = new Set();
     this._entities.forEach(e => {
-      if (e.labels?.includes("no_dboard")) this._excludeSet.add(e.entity_id);
+      if (e.labels?.includes("no_dboard") || e.labels?.includes("no_summary")) this._excludeSet.add(e.entity_id);
     });
     this._hiddenFromConfigSet = new Set();
     if (this._config.config?.areas_options) {
