@@ -3,7 +3,7 @@
 // ====================================================================
 // HTML-Template für den Dashboard Strategy Editor
 
-export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary, showLightsSummary, showSecuritySummary, showCO2Summary }) {
+export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, searchMaxResults, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary, showLightsSummary, showSecuritySummary, showCO2Summary }) {
   return `
     <div class="card-config">
       <div class="section">
@@ -111,6 +111,21 @@ export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy,
           ${hasSearchCardDeps 
             ? 'Zeigt die custom:search-card direkt unter der Uhr in der Übersicht an.' 
             : '⚠️ Benötigt <strong>custom:search-card</strong> und <strong>card-tools</strong>. Bitte installieren Sie beide Komponenten, um diese Funktion zu nutzen.'}
+        </div>
+        <div class="form-row" style="align-items: center; gap: 12px;">
+          <label for="search-max-results" style="flex-shrink: 0;">Max. Suchergebnisse:</label>
+          <input 
+            type="number" 
+            id="search-max-results" 
+            min="5" 
+            max="100" 
+            step="5"
+            value="${searchMaxResults}"
+            style="width: 80px; padding: 6px; border-radius: 4px; border: 1px solid var(--divider-color); background: var(--card-background-color); color: var(--primary-text-color);"
+          />
+        </div>
+        <div class="description">
+          Maximale Anzahl der angezeigten Suchergebnisse (Standard: 10).
         </div>
       </div>
 
