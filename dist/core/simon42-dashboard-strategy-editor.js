@@ -7,6 +7,7 @@ import {
   attachWeatherCheckboxListener,
   attachEnergyCheckboxListener,
   attachSearchCardCheckboxListener,
+  attachSearchMaxResultsListener,
   attachSummaryViewsCheckboxListener,
   attachRoomViewsCheckboxListener,
   attachGroupByFloorsCheckboxListener, // NEU
@@ -72,6 +73,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     const showWeather = this._config.show_weather !== false;
     const showEnergy = this._config.show_energy !== false;
     const showSearchCard = this._config.show_search_card === true;
+    const searchMaxResults = this._config.search_max_results || 10;
     const showSummaryViews = this._config.show_summary_views === true; // Standard: false
     const showRoomViews = this._config.show_room_views === true; // Standard: false
     const groupByFloors = this._config.group_by_floors === true; // NEU
@@ -122,6 +124,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
         showRoomViews,
         showSearchCard,
         hasSearchCardDeps,
+        searchMaxResults,
         summariesColumns,
         alarmEntity,
         alarmEntities,
@@ -142,6 +145,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     attachWeatherCheckboxListener(this, (showWeather) => this._showWeatherChanged(showWeather));
     attachEnergyCheckboxListener(this, (showEnergy) => this._showEnergyChanged(showEnergy));
     attachSearchCardCheckboxListener(this, (showSearchCard) => this._showSearchCardChanged(showSearchCard));
+    attachSearchMaxResultsListener(this, (searchMaxResults) => this._searchMaxResultsChanged(searchMaxResults));
     attachSummaryViewsCheckboxListener(this, (showSummaryViews) => this._showSummaryViewsChanged(showSummaryViews));
     attachRoomViewsCheckboxListener(this, (showRoomViews) => this._showRoomViewsChanged(showRoomViews));
     attachGroupByFloorsCheckboxListener(this, (groupByFloors) => this._groupByFloorsChanged(groupByFloors)); // NEU
@@ -734,6 +738,16 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
       delete newConfig.show_search_card;
     }
 
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _searchMaxResultsChanged(searchMaxResults) {
+    if (!this._config || !this._hass) return;
+    const newConfig = { ...this._config, search_max_results: searchMaxResults };
+    if (searchMaxResults === 10) {
+      delete newConfig.search_max_results;
+    }
     this._config = newConfig;
     this._fireConfigChanged(newConfig);
   }
