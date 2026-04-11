@@ -8,12 +8,18 @@ class Simon42ViewClimateStrategy {
     const entities = config.entities || [];
     const dashboardConfig = config.config || {};
 
-    // Excluded Labels (no-dboard)
-    const excludeSet = new Set(
-      entities
-        .filter(e => e.labels?.includes("no_dboard"))
-        .map(e => e.entity_id)
-    );
+    // Excluded Labels (no_dboard + no_summary) - direkt aus hass.entities
+    // damit auch Entities OHNE Area-Zuordnung gefiltert werden
+    const excludeSet = new Set();
+    if (hass.entities) {
+      var allRegEntries = Object.values(hass.entities);
+      for (var i = 0; i < allRegEntries.length; i++) {
+        var ent = allRegEntries[i];
+        if (ent.labels && (ent.labels.indexOf("no_dboard") !== -1 || ent.labels.indexOf("no_summary") !== -1)) {
+          excludeSet.add(ent.entity_id);
+        }
+      }
+    }
 
     // Hidden from config (areas_options.groups_options.climate.hidden)
     const hiddenFromConfig = new Set();
