@@ -3,7 +3,7 @@
 // ====================================================================
 // HTML-Template für den Dashboard Strategy Editor
 
-export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, searchMaxResults, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary, showLightsSummary, showSecuritySummary, showCO2Summary }) {
+export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, searchMaxResults, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary, showLightsSummary, showSecuritySummary, showCO2Summary, showClimateSummary }) {
   return `
     <div class="card-config">
       <div class="section">
@@ -196,6 +196,17 @@ export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy,
         </div>
         <div class="description">
           Zeigt die CO₂-Zusammenfassungskarte in der Übersicht an (Räume über 1400 ppm).
+        </div>
+        <div class="form-row">
+          <input 
+            type="checkbox" 
+            id="show-climate-summary" 
+            ${showClimateSummary === true ? 'checked' : ''}
+          />
+          <label for="show-climate-summary">Heizungs-Zusammenfassung anzeigen</label>
+        </div>
+        <div class="description">
+          Zeigt die Heizungs-Zusammenfassungskarte in der Übersicht an (aktiv heizende Thermostate).
         </div>
       </div>
 
