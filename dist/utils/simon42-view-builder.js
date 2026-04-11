@@ -76,7 +76,7 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
       title: "Bewegungsmelder",
       path: "motion",
       icon: "mdi:motion-sensor",
-      subview: true,
+      subview: !showSummaryViews,
       strategy: {
         type: "custom:simon42-view-motion",
         entities,
@@ -87,7 +87,7 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
       title: "CO₂",
       path: "co2",
       icon: "mdi:molecule-co2",
-      subview: true,
+      subview: !showSummaryViews,
       strategy: {
         type: "custom:simon42-view-co2",
         entities,
@@ -98,7 +98,7 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
       title: "Heizungen",
       path: "climate",
       icon: "mdi:radiator",
-      subview: true,
+      subview: !showSummaryViews,
       strategy: {
         type: "custom:simon42-view-climate",
         entities,
