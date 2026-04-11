@@ -105,6 +105,15 @@ export function createOverviewSection(data) {
     });
   }
 
+  const showClimateSummary = config.show_climate_summary === true;
+  if (showClimateSummary) {
+    summaryCards.push({
+      type: "custom:simon42-summary-card",
+      summary_type: "climate",
+      areas_options: config.areas_options || {}
+    });
+  }
+
   const showBatteriesSummary = config.show_batteries_summary !== false;
   if (showSecuritySummary) {
     summaryCards.push({
