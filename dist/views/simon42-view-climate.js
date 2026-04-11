@@ -11,7 +11,7 @@ class Simon42ViewClimateStrategy {
     // Excluded Labels (no-dboard)
     const excludeSet = new Set(
       entities
-        .filter(e => e.labels?.includes("no-dboard"))
+        .filter(e => e.labels?.includes("no_dboard"))
         .map(e => e.entity_id)
     );
 
