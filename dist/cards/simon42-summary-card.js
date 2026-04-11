@@ -59,7 +59,7 @@ class Simon42SummaryCard extends HTMLElement {
 
     // Konvertiere Entity Registry Object zu Array und filtere nach no_dboard Label
     Object.values(this._hass.entities).forEach(entity => {
-      if (entity.labels?.includes("no-dboard") || entity.labels?.includes("no_summary")) {
+      if (entity.labels?.includes("no_dboard") || entity.labels?.includes("no_summary")) {
         this._excludeLabelsSet.add(entity.entity_id);
       }
     });
