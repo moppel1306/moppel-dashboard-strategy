@@ -8,10 +8,10 @@ class Simon42ViewClimateStrategy {
     const entities = config.entities || [];
     const dashboardConfig = config.config || {};
 
-    // Excluded Labels (no_dboard)
+    // Excluded Labels (no-dboard)
     const excludeSet = new Set(
       entities
-        .filter(e => e.labels?.includes("no_dboard"))
+        .filter(e => e.labels?.includes("no-dboard"))
         .map(e => e.entity_id)
     );
 
