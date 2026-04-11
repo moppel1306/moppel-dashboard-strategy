@@ -93,6 +93,17 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
         entities,
         config
       }
+    },
+    {
+      title: "Heizungen",
+      path: "climate",
+      icon: "mdi:radiator",
+      subview: true,
+      strategy: {
+        type: "custom:simon42-view-climate",
+        entities,
+        config
+      }
     }
   ];
 }
