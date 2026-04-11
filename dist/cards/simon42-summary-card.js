@@ -217,6 +217,23 @@ class Simon42SummaryCard extends HTMLElement {
           if (state.attributes?.entity_category === 'diagnostic') return false;
           return true;
         });
+
+        case 'climate':
+        return allEntityIds.filter(id => {
+          if (id.indexOf('climate.') !== 0) return false;
+          var state = hass.states[id];
+          if (!state) return false;
+          if (this._excludeLabelsSet.has(id)) return false;
+          if (hiddenFromConfig.has(id)) return false;
+          var registryEntry = hass.entities ? hass.entities[id] : null;
+          if (registryEntry && registryEntry.hidden === true) return false;
+          if (state.attributes && state.attributes.entity_category === 'config') return false;
+          if (state.attributes && state.attributes.entity_category === 'diagnostic') return false;
+          // Kühlschränke ausschließen
+          var name = (state.attributes && state.attributes.friendly_name ? state.attributes.friendly_name : id).toLowerCase();
+          if (name.indexOf('kühl') !== -1 || name.indexOf('fridge') !== -1 || name.indexOf('kuehl') !== -1) return false;
+          return true;
+        });
       
       default:
         return [];
@@ -271,6 +288,9 @@ class Simon42SummaryCard extends HTMLElement {
 
       case 'co2':
         return ['sensor'];
+
+      case 'climate':
+        return ['climate'];
       
       default:
         return [];
@@ -333,6 +353,15 @@ class Simon42SummaryCard extends HTMLElement {
           const value = parseFloat(this.hass.states[id]?.state);
           return !isNaN(value) && value >= 1400;
         }).length;
+
+      case 'climate':
+        // Zähle aktiv heizende Thermostate
+        return relevantEntities.filter(id => {
+          var state = this.hass.states[id];
+          if (!state) return false;
+          var hvacAction = state.attributes ? state.attributes.hvac_action : null;
+          return hvacAction === 'heating' || hvacAction === 'cooling';
+        }).length;
       
       default:
         return 0;
@@ -379,6 +408,12 @@ class Simon42SummaryCard extends HTMLElement {
         name: hasItems ? `${count} ${count === 1 ? 'Raum kritisch' : 'Räume kritisch'} (CO₂)` : 'CO₂ überall OK',
         color: hasItems ? 'red' : 'grey',
         path: 'co2'
+      },
+      climate: {
+        icon: hasItems ? 'mdi:radiator' : 'mdi:thermostat',
+        name: hasItems ? (count + ' ' + (count === 1 ? 'Heizung aktiv' : 'Heizungen aktiv')) : 'Keine Heizung aktiv',
+        color: hasItems ? 'deep-orange' : 'grey',
+        path: 'climate'
       }
     };
     
