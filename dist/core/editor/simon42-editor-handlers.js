@@ -105,6 +105,15 @@ export function attachCO2SummaryCheckboxListener(element, callback) {
   }
 }
 
+export function attachClimateSummaryCheckboxListener(element, callback) {
+  var checkbox = element.querySelector('#show-climate-summary');
+  if (checkbox) {
+    checkbox.addEventListener('change', function(e) {
+      callback(e.target.checked);
+    });
+  }
+}
+
 export function attachLightsSummaryCheckboxListener(element, callback) {
   const checkbox = element.querySelector('#show-lights-summary');
   if (checkbox) {
