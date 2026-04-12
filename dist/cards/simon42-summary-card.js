@@ -485,12 +485,12 @@ class Simon42SummaryCard extends HTMLElement {
   }
 }
 
-customElements.define('simon42-summary-card', Simon42SummaryCard);
+customElements.define('moppel1306-summary-card', Simon42SummaryCard);
 
 // Registriere für Card Picker
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: 'simon42-summary-card',
+  type: 'moppel1306-summary-card',
   name: 'Simon42 Summary Card',
   description: 'Reactive summary card that counts entities dynamically'
 });

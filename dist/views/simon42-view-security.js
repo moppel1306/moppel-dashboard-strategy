@@ -1,7 +1,7 @@
 // ====================================================================
 // VIEW STRATEGY - SECURITY (Schlösser + Türen/Garagen + Fenster) - OPTIMIERT
 // ====================================================================
-import { getExcludedLabels } from '../utils/simon42-helpers.js';
+import { getExcludedLabels } from '../utils/moppel1306-helpers.js';
 
 class Simon42ViewSecurityStrategy {
   static async generate(config, hass) {
@@ -322,4 +322,4 @@ class Simon42ViewSecurityStrategy {
 }
 
 // Registriere Custom Element
-customElements.define("ll-strategy-simon42-view-security", Simon42ViewSecurityStrategy);
+customElements.define("ll-strategy-moppel1306-view-security", Simon42ViewSecurityStrategy);

@@ -5,7 +5,7 @@
 // Keine WebSocket-Calls mehr nötig!
 // ====================================================================
 
-import { getVisibleAreas } from '../utils/simon42-helpers.js';
+import { getVisibleAreas } from '../utils/moppel1306-helpers.js';
 import { 
   collectPersons, 
   collectLights, 
@@ -14,18 +14,18 @@ import {
   collectBatteriesCritical, 
   findWeatherEntity, 
   findDummySensor 
-} from '../utils/simon42-data-collectors.js';
-import { createPersonBadges } from '../utils/simon42-badge-builder.js';
+} from '../utils/moppel1306-data-collectors.js';
+import { createPersonBadges } from '../utils/moppel1306-badge-builder.js';
 import { 
   createOverviewSection, 
   createAreasSection, 
   createWeatherEnergySection 
-} from '../utils/simon42-section-builder.js';
+} from '../utils/moppel1306-section-builder.js';
 import { 
   createOverviewView, 
   createUtilityViews, 
   createAreaViews 
-} from '../utils/simon42-view-builder.js';
+} from '../utils/moppel1306-view-builder.js';
 
 class Simon42DashboardStrategy {
   static async generate(config, hass) {
@@ -120,11 +120,11 @@ class Simon42DashboardStrategy {
   static async getConfigElement() {
     // Der Editor sollte schon geladen sein, da er im Loader ist
     // Warte kurz, falls er noch lädt
-    await import('./simon42-dashboard-strategy-editor.js');
-    await customElements.whenDefined('simon42-dashboard-strategy-editor');
-    return document.createElement('simon42-dashboard-strategy-editor');
+    await import('./moppel1306-dashboard-strategy-editor.js');
+    await customElements.whenDefined('moppel1306-dashboard-strategy-editor');
+    return document.createElement('moppel1306-dashboard-strategy-editor');
   }
 }
 
 // Registriere Custom Element mit dem korrekten Namen
-customElements.define("ll-strategy-simon42-dashboard", Simon42DashboardStrategy);
+customElements.define("ll-strategy-moppel1306-dashboard", Simon42DashboardStrategy);

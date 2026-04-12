@@ -73,7 +73,7 @@ export function createOverviewSection(data) {
   const summaryCards = [];
   if (showLightsSummary) {
     summaryCards.push({
-      type: "custom:simon42-summary-card",
+      type: "custom:moppel1306-summary-card",
       summary_type: "lights",
       areas_options: config.areas_options || {}
     });
@@ -82,7 +82,7 @@ export function createOverviewSection(data) {
   // Covers optional hinzufügen
   if (showCoversSummary) {
     summaryCards.push({
-      type: "custom:simon42-summary-card",
+      type: "custom:moppel1306-summary-card",
       summary_type: "covers",
       areas_options: config.areas_options || {}
     });
@@ -90,7 +90,7 @@ export function createOverviewSection(data) {
 
   if (showMotionSummary) {
     summaryCards.push({
-      type: "custom:simon42-summary-card",
+      type: "custom:moppel1306-summary-card",
       summary_type: "motion",
       areas_options: config.areas_options || {}
     });
@@ -99,7 +99,7 @@ export function createOverviewSection(data) {
   const showCO2Summary = config.show_co2_summary === true;
   if (showCO2Summary) {
     summaryCards.push({
-      type: "custom:simon42-summary-card",
+      type: "custom:moppel1306-summary-card",
       summary_type: "co2",
       areas_options: config.areas_options || {}
     });
@@ -108,7 +108,7 @@ export function createOverviewSection(data) {
   const showClimateSummary = config.show_climate_summary === true;
   if (showClimateSummary) {
     summaryCards.push({
-      type: "custom:simon42-summary-card",
+      type: "custom:moppel1306-summary-card",
       summary_type: "climate",
       areas_options: config.areas_options || {}
     });
@@ -117,14 +117,14 @@ export function createOverviewSection(data) {
   const showBatteriesSummary = config.show_batteries_summary !== false;
   if (showSecuritySummary) {
     summaryCards.push({
-      type: "custom:simon42-summary-card",
+      type: "custom:moppel1306-summary-card",
       summary_type: "security",
       areas_options: config.areas_options || {}
     });
   }
   if (showBatteriesSummary) {
     summaryCards.push({
-      type: "custom:simon42-summary-card",
+      type: "custom:moppel1306-summary-card",
       summary_type: "batteries",
       areas_options: config.areas_options || {}
     });

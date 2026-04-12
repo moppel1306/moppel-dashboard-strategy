@@ -4,7 +4,7 @@
 // KEIN unnötiges Map-Caching mehr - nutzt direkt hass.entities[entityId]
 // ====================================================================
 
-import { getExcludedLabels } from '../utils/simon42-helpers.js';
+import { getExcludedLabels } from '../utils/moppel1306-helpers.js';
 
 class Simon42ViewBatteriesStrategy {
   static async generate(config, hass) {
@@ -163,4 +163,4 @@ class Simon42ViewBatteriesStrategy {
 }
 
 // Registriere Custom Element
-customElements.define("ll-strategy-simon42-view-batteries", Simon42ViewBatteriesStrategy);
+customElements.define("ll-strategy-moppel1306-view-batteries", Simon42ViewBatteriesStrategy);

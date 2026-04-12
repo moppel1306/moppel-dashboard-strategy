@@ -270,6 +270,6 @@ class Simon42CoversGroupCard extends HTMLElement {
 }
 
 // Registriere Custom Element
-customElements.define("simon42-covers-group-card", Simon42CoversGroupCard);
+customElements.define("moppel1306-covers-group-card", Simon42CoversGroupCard);
 
 console.log('✅ Simon42 Covers Group Card loaded');

@@ -1,7 +1,7 @@
 // ====================================================================
 // VIEW STRATEGY - RAUM (generiert Raum-Details mit Sensor-Badges) - OPTIMIERT + KAMERAS
 // ====================================================================
-import { stripAreaName, isEntityHiddenOrDisabled, sortByLastChanged } from '../utils/simon42-helpers.js';
+import { stripAreaName, isEntityHiddenOrDisabled, sortByLastChanged } from '../utils/moppel1306-helpers.js';
 
 class Simon42ViewRoomStrategy {
   static async generate(config, hass) {
@@ -785,4 +785,4 @@ class Simon42ViewRoomStrategy {
 }
 
 // Registriere Custom Element
-customElements.define("ll-strategy-simon42-view-room", Simon42ViewRoomStrategy);
+customElements.define("ll-strategy-moppel1306-view-room", Simon42ViewRoomStrategy);

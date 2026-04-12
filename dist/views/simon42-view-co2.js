@@ -81,5 +81,5 @@ class Simon42ViewCO2Strategy {
   }
 }
 
-customElements.define("ll-strategy-simon42-view-co2", Simon42ViewCO2Strategy);
+customElements.define("ll-strategy-moppel1306-view-co2", Simon42ViewCO2Strategy);
 console.log('✅ Simon42 View CO2 Strategy loaded');

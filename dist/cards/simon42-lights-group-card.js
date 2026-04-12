@@ -224,5 +224,5 @@ class Simon42LightsGroupCard extends HTMLElement {
   }
 }
 
-customElements.define("simon42-lights-group-card", Simon42LightsGroupCard);
+customElements.define("moppel1306-lights-group-card", Simon42LightsGroupCard);
 console.log('✅ Simon42 Lights Group Card loaded');

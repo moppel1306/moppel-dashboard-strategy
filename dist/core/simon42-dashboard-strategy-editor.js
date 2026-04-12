@@ -1,8 +1,8 @@
 // ====================================================================
 // SIMON42 DASHBOARD STRATEGY - EDITOR
 // ====================================================================
-import { getEditorStyles } from './editor/simon42-editor-styles.js';
-import { renderEditorHTML } from './editor/simon42-editor-template.js';
+import { getEditorStyles } from './editor/moppel1306-editor-styles.js';
+import { renderEditorHTML } from './editor/moppel1306-editor-template.js';
 import { 
   attachWeatherCheckboxListener,
   attachEnergyCheckboxListener,
@@ -24,7 +24,7 @@ import {
   attachRoomPinsDragAndDropListeners,
   attachExpandButtonListeners,
   sortAreaItems
-} from './editor/simon42-editor-handlers.js';
+} from './editor/moppel1306-editor-handlers.js';
 
 class Simon42DashboardStrategyEditor extends HTMLElement {
   constructor() {
@@ -380,7 +380,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     const allEntities = this._getAllEntitiesForSelect();
     
     // Importiere die Render-Funktion
-    import('./editor/simon42-editor-template.js').then(module => {
+    import('./editor/moppel1306-editor-template.js').then(module => {
       container.innerHTML = module.renderFavoritesList?.(favoriteEntities, allEntities) || 
                           this._renderFavoritesListFallback(favoriteEntities, allEntities);
       
@@ -508,7 +508,7 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     );
     
     // Importiere die Render-Funktion
-    import('./editor/simon42-editor-template.js').then(module => {
+    import('./editor/moppel1306-editor-template.js').then(module => {
       container.innerHTML = module.renderRoomPinsList?.(roomPinEntities, allEntities, allAreas) || 
                           this._renderRoomPinsListFallback(roomPinEntities, allEntities, allAreas);
       
@@ -1055,4 +1055,4 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
 }
 
 // Registriere Custom Element
-customElements.define("simon42-dashboard-strategy-editor", Simon42DashboardStrategyEditor);
+customElements.define("moppel1306-dashboard-strategy-editor", Simon42DashboardStrategyEditor);

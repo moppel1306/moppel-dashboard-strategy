@@ -33,7 +33,7 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
       icon: "mdi:lamps",
       subview: !showSummaryViews,
       strategy: {
-        type: "custom:simon42-view-lights",
+        type: "custom:moppel1306-view-lights",
         entities,
         config // Übergebe config für areas_options Filterung
       }
@@ -44,7 +44,7 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
       icon: "mdi:blinds-horizontal",
       subview: !showSummaryViews,
       strategy: {
-        type: "custom:simon42-view-covers",
+        type: "custom:moppel1306-view-covers",
         entities,
         device_classes: ["awning", "blind", "curtain", "shade", "shutter", "window"],
         config // Übergebe config für areas_options Filterung
@@ -56,7 +56,7 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
       icon: "mdi:security",
       subview: !showSummaryViews,
       strategy: {
-        type: "custom:simon42-view-security",
+        type: "custom:moppel1306-view-security",
         entities,
         config // Übergebe config für areas_options Filterung
       }
@@ -67,7 +67,7 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
       icon: "mdi:battery-alert",
       subview: !showSummaryViews,
       strategy: {
-        type: "custom:simon42-view-batteries",
+        type: "custom:moppel1306-view-batteries",
         entities,
         config // Übergebe config für areas_options Filterung
       }
@@ -78,7 +78,7 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
       icon: "mdi:motion-sensor",
       subview: !showSummaryViews,
       strategy: {
-        type: "custom:simon42-view-motion",
+        type: "custom:moppel1306-view-motion",
         entities,
         config
       }
@@ -89,7 +89,7 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
       icon: "mdi:molecule-co2",
       subview: !showSummaryViews,
       strategy: {
-        type: "custom:simon42-view-co2",
+        type: "custom:moppel1306-view-co2",
         entities,
         config
       }
@@ -100,7 +100,7 @@ export function createUtilityViews(entities, showSummaryViews = false, config = 
       icon: "mdi:radiator",
       subview: !showSummaryViews,
       strategy: {
-        type: "custom:simon42-view-climate",
+        type: "custom:moppel1306-view-climate",
         entities,
         config
       }
@@ -121,7 +121,7 @@ export function createAreaViews(visibleAreas, devices, entities, showRoomViews =
       icon: area.icon || "mdi:floor-plan",
       subview: !showRoomViews,
       strategy: {
-        type: "custom:simon42-view-room",
+        type: "custom:moppel1306-view-room",
         area,
         devices,
         entities,

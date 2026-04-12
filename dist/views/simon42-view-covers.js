@@ -3,7 +3,7 @@
 // ====================================================================
 // Nutzt zwei reaktive Group-Cards (open/closed) die sich automatisch aktualisieren
 // ====================================================================
-import { getExcludedLabels, stripCoverType } from '../utils/simon42-helpers.js';
+import { getExcludedLabels, stripCoverType } from '../utils/moppel1306-helpers.js';
 
 class Simon42ViewCoversStrategy {
   static async generate(config, hass) {
@@ -18,14 +18,14 @@ class Simon42ViewCoversStrategy {
           type: "grid",
           cards: [
             {
-              type: "custom:simon42-covers-group-card",
+              type: "custom:moppel1306-covers-group-card",
               entities: config.entities,
               config: config.config,
               device_classes: config.device_classes || ["awning", "blind", "curtain", "shade", "shutter", "window"],
               group_type: "open"
             },
             {
-              type: "custom:simon42-covers-group-card",
+              type: "custom:moppel1306-covers-group-card",
               entities: config.entities,
               config: config.config,
               device_classes: config.device_classes || ["awning", "blind", "curtain", "shade", "shutter", "window"],
@@ -39,6 +39,6 @@ class Simon42ViewCoversStrategy {
 }
 
 // Registriere Custom Element
-customElements.define("ll-strategy-simon42-view-covers", Simon42ViewCoversStrategy);
+customElements.define("ll-strategy-moppel1306-view-covers", Simon42ViewCoversStrategy);
 
 console.log('✅ Simon42 View Covers Strategy (with reactive group cards) loaded');

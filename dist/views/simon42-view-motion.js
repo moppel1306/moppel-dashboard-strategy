@@ -73,5 +73,5 @@ class Simon42ViewMotionStrategy {
   }
 }
 
-customElements.define("ll-strategy-simon42-view-motion", Simon42ViewMotionStrategy);
+customElements.define("ll-strategy-moppel1306-view-motion", Simon42ViewMotionStrategy);
 console.log('✅ Simon42 View Motion Strategy loaded');

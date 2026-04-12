@@ -1,7 +1,7 @@
 // ====================================================================
 // VIEW STRATEGY - KLIMA/HEIZUNGEN (gruppiert nach Status)
 // ====================================================================
-import { getExcludedLabels, stripAreaName, isEntityHiddenOrDisabled } from '../utils/simon42-helpers.js';
+import { getExcludedLabels, stripAreaName, isEntityHiddenOrDisabled } from '../utils/moppel1306-helpers.js';
 
 class Simon42ViewClimateStrategy {
   static async generate(config, hass) {
@@ -287,6 +287,6 @@ class Simon42ViewClimateStrategy {
 }
 
 // Registriere Custom Element
-customElements.define("ll-strategy-simon42-view-climate", Simon42ViewClimateStrategy);
+customElements.define("ll-strategy-moppel1306-view-climate", Simon42ViewClimateStrategy);
 
 console.log('✅ Simon42 View Climate Strategy loaded');
