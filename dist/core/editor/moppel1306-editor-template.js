@@ -3,7 +3,30 @@
 // ====================================================================
 // HTML-Template für den Dashboard Strategy Editor
 
-export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, searchMaxResults, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary, showLightsSummary, showSecuritySummary, showCO2Summary, showClimateSummary }) {
+function renderCustomCardItem(card, index) {
+  var title = (card.title || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  var yaml = (card.card || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  var isValid = false;
+  var validationMsg = '';
+  try {
+    if (yaml && window.jsyaml) { window.jsyaml.load(card.card || ''); isValid = true; validationMsg = '\u2705 YAML g\u00fcltig'; }
+    else if (!yaml) { isValid = true; validationMsg = ''; }
+  } catch (e) { isValid = false; validationMsg = '\u274c YAML ung\u00fcltig: ' + e.message; }
+
+  return '<div class="custom-card-item" data-index="' + index + '" style="border: 1px solid var(--divider-color); border-radius: 8px; margin: 8px 0; overflow: hidden;">' +
+    '<div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--secondary-background-color);">' +
+      '<span style="font-weight: 500;">' + (card.title || 'Neue Karte') + '</span>' +
+      '<button class="remove-custom-card" data-index="' + index + '" style="background: none; border: none; cursor: pointer; color: var(--secondary-text-color); font-size: 20px; line-height: 1; padding: 0 4px;">\u00d7</button>' +
+    '</div>' +
+    '<div style="padding: 12px;">' +
+      '<input type="text" class="custom-card-title" data-index="' + index + '" placeholder="Titel (optional)" value="' + title + '" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--divider-color); background: var(--card-background-color); color: var(--primary-text-color); box-sizing: border-box; margin-bottom: 8px;" />' +
+      '<textarea class="custom-card-yaml" data-index="' + index + '" rows="10" placeholder="type: vertical-stack&#10;cards:&#10;  - ..." style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--divider-color); background: var(--card-background-color); color: var(--primary-text-color); font-family: monospace; font-size: 12px; resize: vertical; box-sizing: border-box;">' + yaml + '</textarea>' +
+      '<div class="yaml-status" data-index="' + index + '" style="margin-top: 4px; font-size: 12px; color: ' + (isValid ? 'var(--success-color, #4CAF50)' : 'var(--error-color, #f44336)') + ';">' + validationMsg + '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy, showWeather, showSummaryViews, showRoomViews, showSearchCard, hasSearchCardDeps, searchMaxResults, summariesColumns, alarmEntity, alarmEntities, favoriteEntities, roomPinEntities, allEntities, groupByFloors, showCoversSummary, showMotionSummary, showBatteriesSummary, showLightsSummary, showSecuritySummary, showCO2Summary, showClimateSummary, customCards, customCardsSectionTitle, customCardsSectionIcon }) {
   return `
     <div class="card-config">
       <div class="section">
@@ -126,6 +149,35 @@ export function renderEditorHTML({ allAreas, hiddenAreas, areaOrder, showEnergy,
         </div>
         <div class="description">
           Maximale Anzahl der angezeigten Suchergebnisse (Standard: 10).
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Eigene Karten</div>
+        <div class="form-row" style="gap: 8px; align-items: center;">
+          <input
+            type="text"
+            id="custom-cards-section-title"
+            placeholder="Eigene Karten"
+            value="${customCardsSectionTitle || ''}"
+            style="flex: 2; padding: 8px; border-radius: 4px; border: 1px solid var(--divider-color); background: var(--card-background-color); color: var(--primary-text-color);"
+          />
+          <input
+            type="text"
+            id="custom-cards-section-icon"
+            placeholder="mdi:cards"
+            value="${customCardsSectionIcon || ''}"
+            style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid var(--divider-color); background: var(--card-background-color); color: var(--primary-text-color);"
+          />
+        </div>
+        <div class="description">
+          Überschrift und Icon der Section für die eigenen Karten auf dem Dashboard. Leer lassen für Standardwerte.
+        </div>
+        <div id="custom-cards-list">
+          ${(customCards || []).map(function(card, i) { return renderCustomCardItem(card, i); }).join('')}
+        </div>
+        <div id="add-custom-card" style="margin-top: 12px; padding: 10px; border: 2px dashed var(--divider-color); border-radius: 8px; text-align: center; cursor: pointer; color: var(--secondary-text-color); user-select: none;">
+          + Neue Karte
         </div>
       </div>
 
