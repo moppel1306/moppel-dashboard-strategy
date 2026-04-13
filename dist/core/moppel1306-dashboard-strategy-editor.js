@@ -1072,7 +1072,15 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
   _updateCustomCardYaml(index, yaml) {
     if (!this._config) return;
     var cards = (this._config.custom_cards || []).slice();
-    cards[index] = Object.assign({}, cards[index], { card: yaml });
+    // Parsed als Objekt speichern, damit die Strategy kein jsyaml braucht
+    var cardValue = yaml;
+    if (yaml) {
+      try {
+        var parsed = window.jsyaml ? window.jsyaml.load(yaml) : null;
+        if (parsed && typeof parsed === 'object') cardValue = parsed;
+      } catch(e) { /* Ungültiges YAML - als String behalten */ }
+    }
+    cards[index] = Object.assign({}, cards[index], { card: cardValue });
     var newConfig = Object.assign({}, this._config, { custom_cards: cards });
     this._config = newConfig;
     this._fireConfigChanged(newConfig);
