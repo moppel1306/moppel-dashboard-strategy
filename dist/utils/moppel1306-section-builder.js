@@ -398,38 +398,11 @@ export function createWeatherEnergySection(weatherEntity, showWeather, showEnerg
  * Erstellt die Eigene-Karten-Section aus der Dashboard-Config
  */
 export function createCustomCardsSection(customCards, sectionTitle, sectionIcon) {
-  if (!customCards || customCards.length === 0) return null;
-
-  var cards = [
-    {
-      type: "heading",
-      heading: sectionTitle || "Eigene Karten",
-      heading_style: "title",
-      icon: sectionIcon || "mdi:cards"
-    }
-  ];
-
-  for (var i = 0; i < customCards.length; i++) {
-    var customCard = customCards[i];
-    if (customCard.title) {
-      cards.push({ type: "heading", heading: customCard.title, heading_style: "subtitle" });
-    }
-    if (customCard.card) {
+  if (customCard.card) {
       try {
-        var parsed;
-        if (typeof customCard.card === 'object') {
-          // Neues Format: direkt als Objekt gespeichert
-          parsed = customCard.card;
-        } else if (typeof customCard.card === 'string') {
-          // Altes Format: YAML-String, verschiedene Parser probieren
-          if (window.jsyaml && window.jsyaml.load) {
-            parsed = window.jsyaml.load(customCard.card);
-          } else if (window.jsyaml && window.jsyaml.safeLoad) {
-            parsed = window.jsyaml.safeLoad(customCard.card);
-          } else if (window.YAML && window.YAML.parse) {
-            parsed = window.YAML.parse(customCard.card);
-          }
-        }
+        var parsed = typeof customCard.card === 'object'
+          ? customCard.card
+          : null; // String-Fallback nicht mehr nötig
         if (parsed && typeof parsed === 'object') cards.push(parsed);
       } catch (e) {
         console.error('Moppel Dashboard: Custom card error:', e);
