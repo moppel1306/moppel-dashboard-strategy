@@ -28,8 +28,7 @@ function renderCustomCardItem(card, index) {
     '</div>' +
     '<div style="padding: 12px;">' +
       '<input type="text" class="custom-card-title" data-index="' + index + '" placeholder="Titel (optional)" value="' + title + '" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--divider-color); background: var(--card-background-color); color: var(--primary-text-color); box-sizing: border-box; margin-bottom: 8px;" />' +
-      '<textarea class="custom-card-yaml" data-index="' + index + '" rows="10" placeholder="type: vertical-stack&#10;cards:&#10;  - ..." style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--divider-color); background: var(--card-background-color); color: var(--primary-text-color); font-family: monospace; font-size: 12px; resize: vertical; box-sizing: border-box;">' + yaml + '</textarea>' +
-      '<div class="yaml-status" data-index="' + index + '" style="margin-top: 4px; font-size: 12px; color: ' + (isValid ? 'var(--success-color, #4CAF50)' : 'var(--error-color, #f44336)') + ';">' + validationMsg + '</div>' +
+      '<div class="yaml-editor-container" data-index="' + index + '" style="border: 1px solid var(--divider-color); border-radius: 4px; min-height: 200px;"></div>' +
     '</div>' +
   '</div>';
 }
