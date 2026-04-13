@@ -654,13 +654,13 @@ function getEntityOrdersForArea(areaId, config) {
 export function attachCustomCardsListeners(editor) {
   var root = editor;
 
+  // Section title/icon
   var sectionTitleInput = root.querySelector('#custom-cards-section-title');
   if (sectionTitleInput) {
     sectionTitleInput.addEventListener('change', function(e) {
       editor._customCardsSectionTitleChanged(e.target.value);
     });
   }
-
   var sectionIconInput = root.querySelector('#custom-cards-section-icon');
   if (sectionIconInput) {
     sectionIconInput.addEventListener('change', function(e) {
@@ -668,13 +668,13 @@ export function attachCustomCardsListeners(editor) {
     });
   }
 
+  // Add button
   var addBtn = root.querySelector('#add-custom-card');
   if (addBtn) {
-    addBtn.addEventListener('click', function() {
-      editor._addCustomCard();
-    });
+    addBtn.addEventListener('click', function() { editor._addCustomCard(); });
   }
 
+  // Remove buttons
   var removeButtons = root.querySelectorAll('.remove-custom-card');
   for (var i = 0; i < removeButtons.length; i++) {
     (function(btn) {
@@ -684,6 +684,7 @@ export function attachCustomCardsListeners(editor) {
     })(removeButtons[i]);
   }
 
+  // Card title inputs
   var titleInputs = root.querySelectorAll('.custom-card-title');
   for (var j = 0; j < titleInputs.length; j++) {
     (function(input) {
@@ -693,30 +694,24 @@ export function attachCustomCardsListeners(editor) {
     })(titleInputs[j]);
   }
 
-  var yamlAreas = root.querySelectorAll('.custom-card-yaml');
-  for (var k = 0; k < yamlAreas.length; k++) {
-    (function(area) {
-      var timeout = null;
-      area.addEventListener('input', function() {
-        var index = parseInt(area.getAttribute('data-index'));
-        var statusEl = root.querySelector('.yaml-status[data-index="' + index + '"]');
-        if (statusEl && area.value) {
-          try {
-            if (window.jsyaml) window.jsyaml.load(area.value);
-            statusEl.textContent = '\u2705 YAML g\u00fcltig';
-            statusEl.style.color = 'var(--success-color, #4CAF50)';
-          } catch (e) {
-            statusEl.textContent = '\u274c YAML ung\u00fcltig: ' + e.message;
-            statusEl.style.color = 'var(--error-color, #f44336)';
-          }
-        } else if (statusEl) {
-          statusEl.textContent = '';
+  // ha-yaml-editor für jede Karte einbauen
+  var containers = root.querySelectorAll('.yaml-editor-container');
+  for (var k = 0; k < containers.length; k++) {
+    (function(container) {
+      var index = parseInt(container.getAttribute('data-index'));
+      var cardValue = (editor._config.custom_cards || [])[index]?.card || {};
+
+      var yamlEditor = document.createElement('ha-yaml-editor');
+      yamlEditor.defaultValue = cardValue;
+      yamlEditor.copyClipboard = false;
+
+      yamlEditor.addEventListener('value-changed', function(e) {
+        if (e.detail.isValid) {
+          editor._updateCustomCardYaml(index, e.detail.value);
         }
-        if (timeout) clearTimeout(timeout);
-        timeout = setTimeout(function() {
-          editor._updateCustomCardYaml(index, area.value);
-        }, 600);
       });
-    })(yamlAreas[k]);
+
+      container.appendChild(yamlEditor);
+    })(containers[k]);
   }
 }
