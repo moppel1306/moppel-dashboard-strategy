@@ -398,14 +398,25 @@ export function createWeatherEnergySection(weatherEntity, showWeather, showEnerg
  * Erstellt die Eigene-Karten-Section aus der Dashboard-Config
  */
 export function createCustomCardsSection(customCards, sectionTitle, sectionIcon) {
-  if (customCard.card) {
-      try {
-        var parsed = typeof customCard.card === 'object'
-          ? customCard.card
-          : null; // String-Fallback nicht mehr nötig
-        if (parsed && typeof parsed === 'object') cards.push(parsed);
-      } catch (e) {
-        console.error('Moppel Dashboard: Custom card error:', e);
+  if (!customCards || customCards.length === 0) return null;
+
+  var cards = [
+    {
+      type: "heading",
+      heading: sectionTitle || "Eigene Karten",
+      heading_style: "title",
+      icon: sectionIcon || "mdi:cards"
+    }
+  ];
+
+  for (var i = 0; i < customCards.length; i++) {
+    var customCard = customCards[i];
+    if (customCard.title) {
+      cards.push({ type: "heading", heading: customCard.title, heading_style: "subtitle" });
+    }
+    if (customCard.card) {
+      if (typeof customCard.card === 'object') {
+        cards.push(customCard.card);
       }
     }
   }
