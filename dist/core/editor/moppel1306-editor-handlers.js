@@ -650,3 +650,73 @@ function getEntityOrdersForArea(areaId, config) {
   
   return orders;
 }
+
+export function attachCustomCardsListeners(editor) {
+  var root = editor;
+
+  var sectionTitleInput = root.querySelector('#custom-cards-section-title');
+  if (sectionTitleInput) {
+    sectionTitleInput.addEventListener('change', function(e) {
+      editor._customCardsSectionTitleChanged(e.target.value);
+    });
+  }
+
+  var sectionIconInput = root.querySelector('#custom-cards-section-icon');
+  if (sectionIconInput) {
+    sectionIconInput.addEventListener('change', function(e) {
+      editor._customCardsSectionIconChanged(e.target.value);
+    });
+  }
+
+  var addBtn = root.querySelector('#add-custom-card');
+  if (addBtn) {
+    addBtn.addEventListener('click', function() {
+      editor._addCustomCard();
+    });
+  }
+
+  var removeButtons = root.querySelectorAll('.remove-custom-card');
+  for (var i = 0; i < removeButtons.length; i++) {
+    (function(btn) {
+      btn.addEventListener('click', function() {
+        editor._removeCustomCard(parseInt(btn.getAttribute('data-index')));
+      });
+    })(removeButtons[i]);
+  }
+
+  var titleInputs = root.querySelectorAll('.custom-card-title');
+  for (var j = 0; j < titleInputs.length; j++) {
+    (function(input) {
+      input.addEventListener('change', function() {
+        editor._updateCustomCardTitle(parseInt(input.getAttribute('data-index')), input.value);
+      });
+    })(titleInputs[j]);
+  }
+
+  var yamlAreas = root.querySelectorAll('.custom-card-yaml');
+  for (var k = 0; k < yamlAreas.length; k++) {
+    (function(area) {
+      var timeout = null;
+      area.addEventListener('input', function() {
+        var index = parseInt(area.getAttribute('data-index'));
+        var statusEl = root.querySelector('.yaml-status[data-index="' + index + '"]');
+        if (statusEl && area.value) {
+          try {
+            if (window.jsyaml) window.jsyaml.load(area.value);
+            statusEl.textContent = '\u2705 YAML g\u00fcltig';
+            statusEl.style.color = 'var(--success-color, #4CAF50)';
+          } catch (e) {
+            statusEl.textContent = '\u274c YAML ung\u00fcltig: ' + e.message;
+            statusEl.style.color = 'var(--error-color, #f44336)';
+          }
+        } else if (statusEl) {
+          statusEl.textContent = '';
+        }
+        if (timeout) clearTimeout(timeout);
+        timeout = setTimeout(function() {
+          editor._updateCustomCardYaml(index, area.value);
+        }, 600);
+      });
+    })(yamlAreas[k]);
+  }
+}
