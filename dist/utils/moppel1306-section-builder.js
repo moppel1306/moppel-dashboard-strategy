@@ -416,12 +416,23 @@ export function createCustomCardsSection(customCards, sectionTitle, sectionIcon)
     }
     if (customCard.card) {
       try {
-        var parsed = typeof customCard.card === 'string'
-          ? (window.jsyaml ? window.jsyaml.load(customCard.card) : null)
-          : customCard.card;
-        if (parsed) cards.push(parsed);
+        var parsed;
+        if (typeof customCard.card === 'object') {
+          // Neues Format: direkt als Objekt gespeichert
+          parsed = customCard.card;
+        } else if (typeof customCard.card === 'string') {
+          // Altes Format: YAML-String, verschiedene Parser probieren
+          if (window.jsyaml && window.jsyaml.load) {
+            parsed = window.jsyaml.load(customCard.card);
+          } else if (window.jsyaml && window.jsyaml.safeLoad) {
+            parsed = window.jsyaml.safeLoad(customCard.card);
+          } else if (window.YAML && window.YAML.parse) {
+            parsed = window.YAML.parse(customCard.card);
+          }
+        }
+        if (parsed && typeof parsed === 'object') cards.push(parsed);
       } catch (e) {
-        console.error('Moppel Dashboard: Custom card YAML parse error:', e);
+        console.error('Moppel Dashboard: Custom card error:', e);
       }
     }
   }
