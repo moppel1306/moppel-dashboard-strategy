@@ -5,7 +5,15 @@
 
 function renderCustomCardItem(card, index) {
   var title = (card.title || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-  var yaml = (card.card || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  var yamlRaw = '';
+  if (card.card) {
+    if (typeof card.card === 'string') {
+      yamlRaw = card.card;
+    } else if (typeof card.card === 'object') {
+      try { yamlRaw = window.jsyaml ? window.jsyaml.dump(card.card) : JSON.stringify(card.card, null, 2); } catch(e) {}
+    }
+  }
+  var yaml = yamlRaw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   var isValid = false;
   var validationMsg = '';
   try {
