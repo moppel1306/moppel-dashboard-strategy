@@ -699,7 +699,8 @@ export function attachCustomCardsListeners(editor) {
   for (var k = 0; k < containers.length; k++) {
     (function(container) {
       var index = parseInt(container.getAttribute('data-index'));
-      var cardValue = (editor._config.custom_cards || [])[index]?.card || {};
+      var customCards = editor._config.custom_cards || [];
+      var cardValue = (customCards[index] && customCards[index].card) ? customCards[index].card : {};
 
       var yamlEditor = document.createElement('ha-yaml-editor');
       yamlEditor.defaultValue = cardValue;
