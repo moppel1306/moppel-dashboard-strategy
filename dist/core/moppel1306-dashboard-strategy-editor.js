@@ -23,7 +23,8 @@ import {
   attachFavoritesDragAndDropListeners,
   attachRoomPinsDragAndDropListeners,
   attachExpandButtonListeners,
-  sortAreaItems
+  sortAreaItems,
+  attachCustomCardsListeners
 } from './editor/moppel1306-editor-handlers.js';
 
 class Simon42DashboardStrategyEditor extends HTMLElement {
@@ -140,7 +141,10 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
         showCO2Summary,
         showClimateSummary,
         showLightsSummary,
-        showSecuritySummary
+        showSecuritySummary,
+        customCards: this._config.custom_cards || [],
+        customCardsSectionTitle: this._config.custom_cards_section_title || '',
+        customCardsSectionIcon: this._config.custom_cards_section_icon || ''
       })}
     `;
 
@@ -192,6 +196,9 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     
     // Restore expanded state
     this._restoreExpandedState();
+
+    // Eigene Karten Listener
+    attachCustomCardsListeners(this);
   }
 
   _createFavoritesPicker(favoriteEntities) {
@@ -1031,6 +1038,58 @@ class Simon42DashboardStrategyEditor extends HTMLElement {
     if (showClimateSummary === false) {
       delete newConfig.show_climate_summary;
     }
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _addCustomCard() {
+    if (!this._config) return;
+    var cards = (this._config.custom_cards || []).slice();
+    cards.push({ title: '', card: '' });
+    var newConfig = Object.assign({}, this._config, { custom_cards: cards });
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _removeCustomCard(index) {
+    if (!this._config) return;
+    var cards = (this._config.custom_cards || []).slice();
+    cards.splice(index, 1);
+    var newConfig = Object.assign({}, this._config, { custom_cards: cards });
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _updateCustomCardTitle(index, title) {
+    if (!this._config) return;
+    var cards = (this._config.custom_cards || []).slice();
+    cards[index] = Object.assign({}, cards[index], { title: title });
+    var newConfig = Object.assign({}, this._config, { custom_cards: cards });
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _updateCustomCardYaml(index, yaml) {
+    if (!this._config) return;
+    var cards = (this._config.custom_cards || []).slice();
+    cards[index] = Object.assign({}, cards[index], { card: yaml });
+    var newConfig = Object.assign({}, this._config, { custom_cards: cards });
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _customCardsSectionTitleChanged(title) {
+    if (!this._config) return;
+    var newConfig = Object.assign({}, this._config, { custom_cards_section_title: title });
+    if (!title) delete newConfig.custom_cards_section_title;
+    this._config = newConfig;
+    this._fireConfigChanged(newConfig);
+  }
+
+  _customCardsSectionIconChanged(icon) {
+    if (!this._config) return;
+    var newConfig = Object.assign({}, this._config, { custom_cards_section_icon: icon });
+    if (!icon) delete newConfig.custom_cards_section_icon;
     this._config = newConfig;
     this._fireConfigChanged(newConfig);
   }
