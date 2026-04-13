@@ -19,7 +19,8 @@ import { createPersonBadges } from '../utils/moppel1306-badge-builder.js';
 import { 
   createOverviewSection, 
   createAreasSection, 
-  createWeatherEnergySection 
+  createWeatherEnergySection,
+  createCustomCardsSection
 } from '../utils/moppel1306-section-builder.js';
 import { 
   createOverviewView, 
@@ -80,6 +81,13 @@ class Simon42DashboardStrategy {
 
     // Erstelle Wetter & Energie Section(s)
     const weatherEnergySection = createWeatherEnergySection(weatherEntity, showWeather, showEnergy, groupByFloors);
+
+    // Erstelle Eigene-Karten-Section
+    const customCardsSection = createCustomCardsSection(
+      config.custom_cards,
+      config.custom_cards_section_title,
+      config.custom_cards_section_icon
+    );
     
     // Erstelle Sections für den Haupt-View
     const overviewSections = [
@@ -93,6 +101,8 @@ class Simon42DashboardStrategy {
         config,
         hass
       }),
+      // Eigene Karten Section (wenn konfiguriert)
+      ...(customCardsSection ? [customCardsSection] : []),
       // Wenn groupByFloors aktiv ist, ist areasSections ein Array von Sections
       ...(Array.isArray(areasSections) ? areasSections : [areasSections]),
       // Füge Wetter & Energie Section(s) nur hinzu wenn nicht null/leer
