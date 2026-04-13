@@ -396,10 +396,6 @@ export function createWeatherEnergySection(weatherEntity, showWeather, showEnerg
 
 /**
  * Erstellt die Eigene-Karten-Section aus der Dashboard-Config
- * @param {Array} customCards - Array von {title, card} Objekten
- * @param {string} sectionTitle - Überschrift der Section
- * @param {string} sectionIcon - MDI-Icon der Section
- * @returns {Object|null} Section oder null wenn leer
  */
 export function createCustomCardsSection(customCards, sectionTitle, sectionIcon) {
   if (!customCards || customCards.length === 0) return null;
@@ -416,11 +412,7 @@ export function createCustomCardsSection(customCards, sectionTitle, sectionIcon)
   for (var i = 0; i < customCards.length; i++) {
     var customCard = customCards[i];
     if (customCard.title) {
-      cards.push({
-        type: "heading",
-        heading: customCard.title,
-        heading_style: "subtitle"
-      });
+      cards.push({ type: "heading", heading: customCard.title, heading_style: "subtitle" });
     }
     if (customCard.card) {
       try {
@@ -434,8 +426,5 @@ export function createCustomCardsSection(customCards, sectionTitle, sectionIcon)
     }
   }
 
-  // Nur Section zurückgeben wenn mehr als nur die Überschrift vorhanden
-  if (cards.length <= 1) return null;
-
-  return { type: "grid", cards: cards };
+  return cards.length > 1 ? { type: "grid", cards: cards } : null;
 }
