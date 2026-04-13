@@ -5,22 +5,6 @@
 
 function renderCustomCardItem(card, index) {
   var title = (card.title || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-  var yamlRaw = '';
-  if (card.card) {
-    if (typeof card.card === 'string') {
-      yamlRaw = card.card;
-    } else if (typeof card.card === 'object') {
-      try { yamlRaw = window.jsyaml ? window.jsyaml.dump(card.card) : JSON.stringify(card.card, null, 2); } catch(e) {}
-    }
-  }
-  var yaml = yamlRaw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  var isValid = false;
-  var validationMsg = '';
-  try {
-    if (yaml && window.jsyaml) { window.jsyaml.load(card.card || ''); isValid = true; validationMsg = '\u2705 YAML g\u00fcltig'; }
-    else if (!yaml) { isValid = true; validationMsg = ''; }
-  } catch (e) { isValid = false; validationMsg = '\u274c YAML ung\u00fcltig: ' + e.message; }
-
   return '<div class="custom-card-item" data-index="' + index + '" style="border: 1px solid var(--divider-color); border-radius: 8px; margin: 8px 0; overflow: hidden;">' +
     '<div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--secondary-background-color);">' +
       '<span style="font-weight: 500;">' + (card.title || 'Neue Karte') + '</span>' +
